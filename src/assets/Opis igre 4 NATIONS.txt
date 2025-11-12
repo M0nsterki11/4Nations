@@ -1,0 +1,215 @@
+################################
+IDEJE ZA DODATI
+################################
+Kasnije dodamo da kada 2 tima napadaju isti defending tim, defending tim ima "second chanche" opciju.
+Dobi second chanche opciju ako izgube napad prvog tima, a sljedeči tim im dođe i isto započne napad. U slucaju ako pobjede njega onda se revajvaju.
+
+###### DODATI administrator "tool" za lakse pracenje toka igre OBAVEZNO ##########
+
+
+###################################################################
+UMNA MAPA IGRE “4 NATIONS” (Ažurirana verzija)
+IGRA KASNIJE NAMJENJENA DA SE IGRAL MULTIPLAYER PREKO VISE platformi/usera
+
+4 NATIONS – Online društvena igra za 6 do 8 igrača (u 4 factiona)
+
+== OSNOVNO ==
+
+4 factiona (timovi od po 2 igrača): Vatra 🔥, Voda 💧, Zemlja 🌍, Vjetar 🌪️
+
+Svaki tim kreće iz jednog kuta mape
+
+Možda nasumično generirana mapa s poveznicama prema sredini ili ručno rađena
+
+Cilj: Eliminirati ostale factione, ostati posljednji na mapi
+
+== MEHANIKE ==
+
+FAZE IGRE:
+
+FAZA 1: Prvi igrač dolazi u sredinu → samo sjedi i čeka suigrača
+
+FAZA 2: Suigrač dolazi u sredinu → bira protivnika za napad (prvi suigrač koji je dosao ostaje u sredini ili budu mogli birati)
+
+FAZA 3: Igrač prelazi tuđu stazu, dolazi do njihove baze/početka → pokreće challenge
+
+FAZA 4: Challenge (napadači vs obrambeni)
+
+Ako napadači pobijede → protivnički tim ispada
+
+Ako obrambeni pobijede → napadač se vraća u sredinu
+
+KING OF THE HILL MEHANIKA:
+
+Aktivira se po prvi puta kada je od svakog tima po jedan igrac u sredini i kada su svi timovu u NAPADU
+
+Nakon prve aktivacije aktivan je cijelo vrijeme tj. samo se baca kocka za koth kada su ponovo sva 4 igraca u sredini (1 po svakom timu)
+
+Svi bacaju kocku
+
+Igrač s najvećim brojem ostaje u sredini
+
+Svi ostali se vraćaju za razliku od najvećeg broja unatrag na svojoj stazi
+
+timovi kojih je igrac izbađen iz sredine, ne mogu nastaviti s napadom dok se ne vrate ponovo u sredinu
+
+== IGRAČA TABLA (MAPA) ==
+
+Ručno generirana
+
+4 POČETNE točke (kutevi)
+
+SREDINA: Centralna točka za napadanje
+
+Moguće zone i polja:
+
+Obična polja
+
+Polja s ability karticama
+
+Polja s pozitivnim/negativnim efektima
+
+NEUTRALNA ZONA: Područje u radijusu 7 poteza oko sredine gdje abilityi i kartice nemaju nikakav učinkak
+
+CRNE RUPE: teleportiraju igrača nasumično negdje na mapi (logika teleportacije može se kasnije definirati)
+
+== UI/UX PROTOTIP I DIZAJN ==
+
+Vizualni izgled: Otok podijeljen u 4 prirodna elementa (lava, more, planine, oblaci)
+
+Boji faction jasno definirane (crvena, plava, smeđa, bijela/siva)
+
+Početne zone s tribal simbolima
+
+Sredina označena kružnom arenom
+
+Animirani elementi: efekti kocke, svjetlosni efekti kod abilityja
+
+UI elementi:
+
+Lijevo: timski status, ability načinjenice
+
+Desno: karta na potezu, opis posljednjeg događaja
+
+Donje sredina: dugme za bacanje kocke i korištenje kartica
+
+Na tabli: svi igrači prikazani kao tokeni u 3D stilu
+
+== KOCKA I BACANJA ==
+
+Standardna kocka (1-6)
+
+Bacanje 6:
+
+Još jedno bacanje
+
++1 na sljedeće bacanje
+
+x2 bacanje
+
+Dodavanje ability polja
+
+== KARTICE I SUSTAV GENERIRANJA ==
+
+ABILITY KARTICE:
+
+Aktiviraju se na ability poljima
+
+Nasumično se generiraju iz baze 20+ kartica
+
+Mogući efekti:
+
+Teleportacija
+
+Povratak protivnika
+
+Zamrzavanje polja
+
+Uklanjanje tuđeg abilityja
+
+Dodavanje novog ability polja
+
+POZITIVNE/NAGATIVNE KARTICE:
+
+Aktiviraju se na posebnom polju
+
+Nasumično se povlače iz baze 30+ kartica
+
+Efekti:
+
+x2 potez
+
+Reroll
+
+Gubitak poteza
+
+Preskoči slijedećeg igrača
+
+Povratak X polja unazad
+
+== Abilitz Factiona == MOŽDA DODATI
+
+Svaki faction ima jednu specijalnu sposobnost (koristi se samo 1x u partiji):
+
+Vatra: Još jedan potez odmah
+
+Voda: Preskakanje izazova
+
+Vjetar: Zamjena pozicija s drugim igračem
+
+Zemlja: Imunitet na jedan potez
+
+== DODATNE OPCIJE / PRAVILA ==
+
+Ako igrač ne dođe do baze unutar X poteza, vraća se u sredinu i može birati novu metu
+
+Igrači koji nisu aktivni (stoje u sredini) sudjeluju u mini igri King of the Hill dok čekaju
+
+Rune MOĆI: ideja za kasnije dodavanje, trenutno nije u igri
+
+
+
+| Naziv kartice      | Efekt                                                         |
+| ------------------ | ------------------------------------------------------------- |
+| Zamrzni Vrijeme    | Sljedeći protivnik preskače svoj potez                        |
+| Preseljenje        | Pomakni bilo kojeg igrača na drugo normalno polje             |
+| Granica            | Označi ability polje neprijatelju kao neaktivno do kraja igre |
+| Protresanje Zemlje | Svi igrači izvan neutralne zone gube 1 potez                  |
+| Iznenadni Vjetar   | Pomakni sebe za dodatna 3 polja naprijed                      |
+| Moć Elementa       | Aktiviraj frakcijsku moć bez potrošnje                        |
+| Sjena              | Protivnici ne vide tvoju poziciju 1 potez                     |
+| Pojačanje          | Dodaj ability polje na bilo koje prazno mjesto                |
+| Magična Barijera   | Sljedeći napad na tebe automatski ne uspijeva                 |
+| Dupli Udarač       | Sljedeći izazov imaš +1 u rezultatu                           |
+
+
+
+| Naziv kartice       | Efekt                                                            |
+| ------------------- | ---------------------------------------------------------------- |
+| Reroll              | Baci kocku ponovno                                               |
+| Sprint              | Sljedeće bacanje x2                                              |
+| Staza Sudbine       | Pomakni se do najbližeg ability polja                            |
+| Bonus Bacanje       | Još jedan bacanje odmah                                          |
+| Brzi Povrat         | Ako si na neprijateljskoj stazi, vrati se na sredinu bez gubitka |
+| Vremenski Skok      | Preskoči jedno negativno polje                                   |
+| Prijateljska Magija | Tvoj suigrač također pomiče 3 polja                              |
+| Trik Karte          | Pogledaj 3 nadolazeće karte ability/pozitivne i odaberi jednu    |
+
+
+
+
+| Naziv kartice    | Efekt                                                         |
+| ---------------- | ------------------------------------------------------------- |
+| Povratak         | Vrati se unatrag koliko si bacio                              |
+| Klizav Put       | Gubiš sljedeći potez                                          |
+| Magična Zabrana  | Ne možeš koristiti ability 2 poteza                           |
+| Nestabilna Kocka | Sljedeće bacanje = 1                                          |
+| Tamna Magla      | Tvoj suigrač se pomiče unazad 2                               |
+| Zamka            | Gubiš ability karticu ako imaš                                |
+| Iluzija          | Teleportiraj se na nasumično mjesto osim neutralne zone       |
+| Krivi Put        | Vraćaš se do prethodnog ability polja                         |
+| Kaos             | Zamjeni pozicije s protivničkim igračem (nasumično odabranim) |
+
+
+
+

@@ -1,0 +1,209 @@
+
+
+.game-board {
+  position: relative;
+  width: 100%;
+  height: 90vh;
+  background: #f0f0f05d;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 5px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.corner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  border-radius: 8px;
+  color: white;
+  padding: 10px;
+}
+
+
+.center {
+  grid-area: 2 / 2;
+  background-color: #ffeaa7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.viewport {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.big-map {
+  /* Podesi na istu veličinu kao grid (= 30 × 100px + 29 × gap) */
+  width: 3029px;
+  height: 3029px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: grab;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(30, 100px);
+  grid-template-rows: repeat(30, 100px);
+  gap: 1px;                /* gap po želji */
+  
+  width: 3000px;           /* 30×100 */
+  height: 3000px;          /* 30×100 */
+  
+  background-image: url('../assets/board-bg.png');
+  background-size: 3000px 3000px; /* točno dimenzije mape */
+  background-position: 0 0;       /* top-left usklađeno sa prvim tileom */
+  background-repeat: no-repeat;
+}
+
+.tile {
+  /* Neka tile popuni cijelu svoju grid ćeliju */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  border: 1px solid #999;
+  background-color: rgba(204,204,204,0.5);
+  user-select: none;
+}
+
+.center-2x2 {
+  /* Centar točno na sredini mreže */
+  grid-row: 15 / span 2;   /* ćelije redova 15 i 16 */
+  grid-column: 15 / span 2;/* ćelije stupaca 15 i 16 */
+  background-color: #333;
+  color: #ffe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.quadrant-1 { /* vjetar */    background-color: rgba(173,216,230,0.1); }
+.quadrant-2 { /* zemlja */    background-color: rgba(144,238,144,0.1); }
+.quadrant-3 { /* vatra */     background-color: rgba(255,160,122,0.1); }
+.quadrant-4 { /* voda */      background-color: rgba(135,206,250,0.1); }
+
+
+.path-tile {
+  background-color: rgba(255,255,0,0.3) !important;
+}
+
+
+.path1-tile {
+  background-color: rgba(255, 215, 0, 0.5) !important;
+  /* po želji: border: 2px solid gold; */
+}
+
+
+.attack-modal {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.8);
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  color: #fff;
+  z-index: 10;
+}
+.attack-modal button {
+  margin: 0.5rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 9;
+}
+
+/* Tvoj modal neka ima veći z-index */
+.attack-modal {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #222;
+  color: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  z-index: 10;
+}
+
+
+.challenge-modal {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  padding: 1.5rem;
+  border-radius: 8px;
+  color: #fff;
+  z-index: 11;
+}
+.challenge-modal button {
+  display: block;
+  margin: 0.5rem 0;
+}
+
+/*WINNER MODUL*/
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0,0,0,0.5);
+  z-index: 999;
+}
+
+.winner-modal {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  color: #222;
+  border-radius: 18px;
+  box-shadow: 0 0 32px rgba(0,0,0,0.2);
+  z-index: 1000;
+  padding: 40px 50px 30px 50px;
+  text-align: center;
+  min-width: 300px;
+}
+
+.winner-modal h2 {
+  margin-bottom: 16px;
+}
+.winner-modal button {
+  margin-top: 20px;
+  padding: 8px 22px;
+  font-size: 18px;
+  border-radius: 6px;
+  border: none;
+  background: #1e90ff;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.winner-modal button:hover {
+  background: #1768c5;
+}

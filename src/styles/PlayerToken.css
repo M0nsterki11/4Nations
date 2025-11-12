@@ -1,0 +1,10 @@
+/* src/styles/PlayerToken.css */
+.player-token {
+  font-size: 24px;
+  pointer-events: none;
+  transform: translateY(-10%);
+  transition: transform 0.2s;
+}
+.player-token.active {
+  transform: translateY(-10%) scale(1.3);
+}
