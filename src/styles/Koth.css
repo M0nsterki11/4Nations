@@ -18,7 +18,7 @@
 }
 
 .koth-subtitle {
-  font-size: 0.9rem;
+  font-size: 1rem;
   opacity: 0.8;
 }
 
@@ -87,11 +87,44 @@
 }
 
 .koth-status {
-  margin-top: 0.4rem;
-  font-size: 0.85rem;
+  margin-top: 2rem;
+  font-size: 0.80rem;
   opacity: 0.85;
 }
 
 .koth-winner h3 {
   margin-bottom: 0.25rem;
+}
+
+.koth-winner-title {
+  font-size: 2.5rem;
+  font-weight: 900;
+  text-align: center;
+  animation: popIn 0.3s ease-out forwards;
+  text-shadow: 0 0 8px rgba(255,255,255,0.4);
+}
+
+@keyframes popIn {
+  0%   { transform: scale(0.6); opacity: 0; }
+  80%  { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+.koth-winner-team {
+  font-size: 1.5rem;              /* veće od normalnog */
+  font-weight: 800;             /* jako bold */
+  text-align: center;
+  margin-top: 4px;
+  margin-bottom:3px;
+  color: #ffd700;               /* zlatna boja */
+  text-shadow: 
+    0 0 8px rgba(255, 215, 0, 0.5),
+    0 0 12px rgba(255, 215, 0, 0.3);
+  animation: winnerGlow 1.2s ease-out forwards;
+}
+
+@keyframes winnerGlow {
+  0%   { opacity: 0; transform: scale(0.9); }
+  60%  { opacity: 1; transform: scale(1.08); }
+  100% { opacity: 1; transform: scale(1); }
 }

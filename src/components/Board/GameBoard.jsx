@@ -59,8 +59,6 @@ const GameBoard = () => {
   });
   // Za praćenje tko je kliknuo Ready
   const [readyStatus, setReadyStatus] = useState({});
-  // Za praćenje tko je glasao Winner/Eliminated
-  const [resultStatus, setResultStatus] = useState({});
   // Koji je tim meta za ovaj izazov
   const [defenderTeam, setDefenderTeam] = useState(null);
 
@@ -155,43 +153,6 @@ useEffect(() => {
 
 
 useEffect(() => {
-  if ( challengeStage === "vote" && Object.values(resultStatus).every(v => v !== null)) 
-    {
-    const defenderLost = Object.values(resultStatus).includes("eliminated");
-    if (defenderLost) {
-  const eliminatedTeam = challengeForPlayer.defenderTeam;
-  setPlayers(ps => {
-    // 1. Makni eliminirane igrače
-    const survivors = ps.filter(p => p.team !== eliminatedTeam);
-    // 2. Svi napadači koji su išli na eliminirani tim – vrati u centar
-    return survivors.map(p =>
-      p.isReturning && p.defenderTeam === eliminatedTeam
-        ? { ...p, isReturning: false, defenderTeam: null, step: 0, path: [434] }
-        : p
-    );
-  });
-} else {
-  // Samo napadača vrati u centar
-  setPlayers(ps =>
-    ps.map(p =>
-      p.id === challengeForPlayer.attackerId
-        ? { ...p, step: 0, path: [434], isReturning: false, defenderTeam: null }
-        : p
-    )
-  );
-}
-    setChallengeForPlayer(null);
-    setCurrentChallenge(null);
-    setChallengeStage(null);
-    setReadyStatus({});
-    setResultStatus({});
-    setAttackerTeam(null);
-    setDefenderTeam(null);
-  }
-}, [resultStatus, challengeStage, challengeForPlayer]);
-
-
-useEffect(() => {
   // Ako već ima aktivan challenge, čekaj
   if (challengeForPlayer !== null || challengeStage !== null) return;
 
@@ -239,6 +200,22 @@ useEffect(() => {
   }
 }, [players, winnerTeam]);
 
+useEffect(() => {
+  if (!kothActive || !kothWinner) return;
+
+  const t = setTimeout(() => {
+    // zatvori modal i očisti
+    setKothActive(false);
+    setKothPlayers([]);
+    setKothWinner(null);
+    setKothRolling(false);
+    setRolling(false);
+    // mozda dodati nextTurn();
+  }, 3000);
+
+  return () => clearTimeout(t);
+}, [kothActive, kothWinner]);
+
 
 // ZAVRŠETAK USE EFEKTA ####################################################################
 
@@ -285,77 +262,39 @@ function getNextTeam(teamId) {
 function handleKothRoundEnd() {
   const rolls = kothState.results;
   const teamIds = Object.keys(rolls);
-
-  if (teamIds.length === 0) return; // safety
+  if (teamIds.length === 0) return;
 
   const maxRoll = Math.max(...Object.values(rolls));
-
   const winningTeams = teamIds
     .filter(teamId => rolls[teamId] === maxRoll)
     .map(Number);
 
-    const kothIds = new Set(kothPlayers.map(p => p.id));
+  // samo igrače koji su stvarno bili u KOTH-u smijemo dirati
+  const kothIds = new Set(kothPlayers.map(p => p.id));
 
-  // 🔁 Ako je izjednačenje (više timova s istim max bacanjem) – reroll među njima
-  if (winningTeams.length > 1) {
-    // prikaži da je tie, svi ti timovi ostaju u KOTH-u
-    setKothWinner(winningTeams);
+  // pobjednici ostaju, poraženi se vraćaju unatrag za (max - njihov)
+  setPlayers(prev =>
+    prev.map(p => {
+      if (!kothIds.has(p.id)) return p;         // nije bio u KOTH-u
+      const their = rolls[p.team];
+      if (their == null) return p;
+      if (winningTeams.includes(p.team)) return p;
 
-    // u KOTH ostaju samo igrači iz tih timova
-    setKothPlayers(prev =>
-      prev.filter(p => winningTeams.includes(p.team))
-    );
+      const diff = maxRoll - their;
+      const newStep = Math.max(0, p.step - diff);
+      return { ...p, step: newStep };
+    })
+  );
 
-    // resetiraj rezultate i idi u novu rundu
-    setKothState(prev => ({
-      ...prev,
-      results: {},
-      round: prev.round + 1,
-    }));
+  // prikaži WINNER / WINNERS banner
+  setKothWinner(winningTeams);
 
-    return;
-  }
-
-  const winningTeam = winningTeams[0];
-
-  // 🧮 Primijeni KOTH pravilo:
-  // – pobjednik ostaje gdje jest (u sredini),
-  // – svi ostali timovi se vraćaju unatrag za (maxRoll - njihovRoll),
-  //   ali ne mogu ispod 0
-  setPlayers(prevPlayers =>
-  prevPlayers.map(p => {
-    // ako ovaj igrač uopće nije bio u KOTH-u, ne diramo ga
-    if (!kothIds.has(p.id)) return p;
-
-    const roll = rolls[p.team];
-    if (roll == null) return p;
-
-    // pobjednički tim ostaje gdje jest (u sredini)
-    if (p.team === winningTeam) {
-      return p;
-    }
-
-    // poraženi tim – taj token se vraća unatrag
-    const diff = maxRoll - roll;
-    const newStep = Math.max(0, p.step - diff);
-    return { ...p, step: newStep };
-  })
-);
-
-  // spremi pobjednika da Koth modal može prikazati poruku
-  setKothWinner([winningTeam]);
-
-  // resetiraj KOTH state za iduću potencijalnu aktivaciju
+  // round++ i reset rezultata (auto-close effect odradi ostalo)
   setKothState(prev => ({
     ...prev,
     results: {},
     round: prev.round + 1,
   }));
-  setKothActive(false);
-  setKothPlayers([]);
-  setKothAttacker(null);      // za sada ga ni ne koristimo
-  setKothRolling(false);      // sigurnosti radi
-  setRolling(false);          // ako ti globalni rolling ostane zaglavljen
 }
 
 
@@ -368,44 +307,56 @@ function nextTurn() {
   setRolling(false);
 }
 
+function resolveChallenge(attackerWon) {
+  if (!challengeForPlayer) return;
 
-function handleChallengeResult(winner, loser) {
-  // Makni izazov
-  setChallengeStage(null);
-  setAttackMode(null);
-  setCurrentChallenge(null);
+  const { attackerId, defenderTeam } = challengeForPlayer;
 
-  // Eliminiraj tim ako je više nema igrača
-  const loserTeam = loser.team;
-  const remaining = players.filter(p => p.team === loserTeam && p.id !== loser.id);
+  if (attackerWon) {
+    // 👊 Napadač pobijedio → cijeli defending tim ispada
+    const eliminatedTeam = defenderTeam;
+    setPlayers(ps => {
+      // 1. makni sve igrače tog tima
+      const survivors = ps.filter(p => p.team !== eliminatedTeam);
 
-  if (remaining.length === 0) {
-    // Izbačen cijeli tim
-    setPlayers(ps => ps.filter(p => p.team !== loserTeam));
+      // 2. svi napadači koji su išli na taj tim vraćaju se u centar
+      return survivors.map(p =>
+        p.isReturning && p.defenderTeam === eliminatedTeam
+          ? {
+              ...p,
+              isReturning: false,
+              defenderTeam: null,
+              step: 0,
+              path: [434],
+            }
+          : p
+      );
+    });
   } else {
-    // Izbačen samo taj igrač
-    setPlayers(ps => ps.filter(p => p.id !== loser.id));
+    // 🛡 Obrana pobijedila → samo napadač se vraća u centar
+    setPlayers(ps =>
+      ps.map(p =>
+        p.id === attackerId
+          ? {
+              ...p,
+              step: 0,
+              path: [434],
+              isReturning: false,
+              defenderTeam: null,
+            }
+          : p
+      )
+    );
   }
 
-  // Ako je napadač još živ i ima koga napasti
-  const attacker = winner;
-  const availableTargets = players.filter(
-    p => p.team !== attacker.team && p.team !== loserTeam
-  );
-
-  if (availableTargets.length > 0) {
-    setAttackerPlayer(attacker);
-    setAttackerTeam(attacker.team);
-    setChallengeStage("chooseDefender");
-    setAttackMode("chainAttack");
-  } else {
-    // Nema više meta za napad
-    setAttackerPlayer(null);
-    setAttackerTeam(null);
-    setAttackMode(null);
-    setChallengeStage(null);
-    nextTurn();
- }
+  // resetiraj challenge state
+  setChallengeForPlayer(null);
+  setCurrentChallenge(null);
+  setChallengeStage(null);
+  setReadyStatus({});
+  setAttackerTeam(null);
+  setDefenderTeam(null);
+  nextTurn();
 }
 
   // TEAM ROLL ####
@@ -481,6 +432,8 @@ const handleTeamRoll = () => {
   };
   const handleMouseUp = () => setIsDragging(false);
 
+
+// GENERACIJA MAPE I TOK IGRE
 
 const generateTiles = () => {
   const tiles = [];
@@ -636,28 +589,15 @@ const generateTiles = () => {
       <div className="challenge-modal">
         <p>Odaberite rezultat izazova:</p>
 
-        {Object.values(resultStatus).filter(v => v === "winner").length >= 2 && (
-  <button
-    onClick={() =>
-      handleChallengeResult(attackerPlayer, challengeForPlayer)
-    }
-        >
-          Potvrdi: Napadač pobijedio
+        <button onClick={() => resolveChallenge(true)}>
+          Napadač pobijedio
         </button>
-      )}
 
-      {Object.values(resultStatus).filter(v => v === "eliminated").length >= 2 && (
-        <button
-          onClick={() =>
-            handleChallengeResult(challengeForPlayer, attackerPlayer)
-          }
-        >
-          Potvrdi: Obrana pobijedila
+        <button onClick={() => resolveChallenge(false)}>
+          Obrana pobijedila
         </button>
-      )}
       </div>
-
-)}
+  )}
 
     {kothActive && (
       <Koth
@@ -707,5 +647,4 @@ const generateTiles = () => {
     </div>
   );
 };
-
 export default GameBoard;

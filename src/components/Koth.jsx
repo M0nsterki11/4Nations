@@ -29,7 +29,7 @@ function Koth({
       <div className="modal-overlay" />
 
       <div className="koth-modal">
-        <h2>King of the Hill</h2>
+        <h1>👑King of the Hill👑</h1>
         <p className="koth-subtitle">
           Svi timovi koji su u sredini bacaju kocku. Pobjednik ostaje, ostali se vraćaju unatrag.
         </p>
@@ -86,18 +86,17 @@ function Koth({
         {/* prikaz pobjednika runde + Nastavi */}
         {winnerTeam && (
           <div className="koth-section koth-winner">
-            <h3>
-              {Array.isArray(winnerTeam) && winnerTeam.length > 1
-                ? `Pobjednici KOTH runde: ${winnerTeam
-                    .map(t => `Tim ${t}`)
-                    .join(", ")}`
-                : `Pobjednik KOTH runde: Tim ${
-                    Array.isArray(winnerTeam) ? winnerTeam[0] : winnerTeam
-                  }`}
+            <h2 className="koth-winner-title">
+              {Array.isArray(winnerTeam) && winnerTeam.length > 1 ? "WINNERS!!" : "WINNER"}
+            </h2>
+            <h3 className="koth-winner-team">
+              {Array.isArray(winnerTeam)
+                ? winnerTeam.map(t => `Tim ${t}`).join(', ')
+                : `Tim ${winnerTeam}`}
             </h3>
-            <button className="koth-continue-btn" onClick={onRoundEnd}>
-              Nastavi igru
-            </button>
+            <p className="koth-status" style={{ textAlign: 'center' }}>
+              Zatvaram za 3 sekunde…
+            </p>
           </div>
         )}
       </div>
