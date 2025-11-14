@@ -186,7 +186,6 @@ useEffect(() => {
     .map(p => p.id);
 
   setReadyStatus(Object.fromEntries(involvedIds.map(id => [id, false])));
-  setResultStatus(Object.fromEntries(involvedIds.map(id => [id, null])));
   setChallengeStage("ready");
 }, [challengeForPlayer]);
 
@@ -221,6 +220,7 @@ useEffect(() => {
 
 
 function handleKothRoll(teamId) {
+  if (kothWinner) return;        // već imamo pobjednika, ignoriraj KAK TO RADI ??????
   if (isTeamEliminated(teamId)) return; // eliminirani tim ne može bacati
   if (kothRolling) return;
 
@@ -269,6 +269,9 @@ function handleKothRoundEnd() {
     .filter(teamId => rolls[teamId] === maxRoll)
     .map(Number);
 
+    console.log('[KOTH] Rezultati runde:', kothState.results);
+    console.log('[KOTH] Pobjednici:', winningTeams);
+
   // samo igrače koji su stvarno bili u KOTH-u smijemo dirati
   const kothIds = new Set(kothPlayers.map(p => p.id));
 
@@ -285,6 +288,11 @@ function handleKothRoundEnd() {
       return { ...p, step: newStep };
     })
   );
+  
+    // DEBUG STANJA NAKON UPDATE-a za Tokene
+  setTimeout(() => {
+    console.log('[KOTH] Stanje igrača nakon primjene KOTH logike:', players);
+  }, 10);
 
   // prikaži WINNER / WINNERS banner
   setKothWinner(winningTeams);

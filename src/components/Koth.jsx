@@ -66,7 +66,7 @@ function Koth({
                 key={teamId}
                 className="koth-roll-btn"
                 onClick={() => onRoll(teamId)}
-                disabled={kothRolls[teamId] !== undefined || kothRolling}
+                disabled={kothRolls[teamId] !== undefined || kothRolling || winnerTeam}
               >
                 🎲 Baci za tim {teamId}
               </button>
