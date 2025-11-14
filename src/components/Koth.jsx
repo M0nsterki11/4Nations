@@ -83,7 +83,7 @@ function Koth({
           )}
         </div>
 
-        {/* prikaz pobjednika runde + Nastavi */}
+        {/* prikaz pobjednika runde*/}
         {winnerTeam && (
           <div className="koth-section koth-winner">
             <h2 className="koth-winner-title">

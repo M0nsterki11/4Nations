@@ -1,0 +1,18 @@
+
+        ### Ako je potrebno za NextTurn da se ne vrti beskonačno kad su svi eliminirani
+function nextTurn() {
+  const livingTeams = Array.from(new Set(players.map(p => p.team)));
+  if (livingTeams.length === 0) return; // igra gotova, winner modal će to uhvatiti
+
+  let next = currentTeam;
+  let safety = 0;
+
+  do {
+    next = getNextTeam(next);
+    safety++;
+    if (safety > 10) break; // zaštita od loopa
+  } while (isTeamEliminated(next));
+
+  setCurrentTeam(next);
+  setRolling(false);
+}

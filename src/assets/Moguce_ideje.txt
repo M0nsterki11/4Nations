@@ -1,0 +1,29 @@
+
+!!!!!!!!!!!! BITNO KOTH SE MORA MAKNUTI KADA SU SAMO 2 TIMA ŽIVA
+
+                        ################ 1. ###################
+Pravilo:
+postoji jedan veliki KOTH event u partiji, npr. kad se SVA 4 tima prvi put nađu u sredini
+
+nakon toga se KOTH više nikad ne pali (čak i kad su 3 tima u centru)
+
+To je kao neki “Veliki rat za brdo” u središtu mape.
+
+Plus:
+
+jednostavno za implementaciju
+
+jasna priča: svi se susretnu u centru → veliki KOTH → netko dobije prednost → dalje klasična igra
+
+Minus:
+
+ti si ranije rekao da želiš da se KOTH “uvijek može ponavljati”, pa se ovo kosi s tom idejom,
+
+manje dinamično.
+
+
+                        ################# 2. ##################
+
+DOBRA IDEJA 
+Kako ispadaju igraći tj. kad je 2 tima može se koth maknuti ili dodati druga ideja da se igra ubrza-
+ tj. kraj osjeća napetiji, brži.

@@ -57,6 +57,7 @@ const GameBoard = () => {
     3: false,
     4: false,
   });
+
   // Za praćenje tko je kliknuo Ready
   const [readyStatus, setReadyStatus] = useState({});
   // Koji je tim meta za ovaj izazov
@@ -77,6 +78,7 @@ const GameBoard = () => {
                 //#### KOTH useEffecti ####
 
 useEffect(() => {
+  // 1) Tko je u sredini (i nije u povratku)?
   const playersInCenter = players.filter(
     p => centerTiles.has(repIndex(p.path[p.step])) && !p.isReturning
   );
@@ -87,46 +89,62 @@ useEffect(() => {
     return acc;
   }, {});
 
+  // 2) TRIGGER ZA ATTACK MODE (isti kao prije)
   for (const team in teamsGrouped) {
     if (teamsGrouped[team].length >= 2 && !attackMode && !challengeStage) {
       const attacker = teamsGrouped[team][1]; // drugi koji je ušao
 
-    setAttackMode({
-      attackerId: attacker.id,
-      team: attacker.team,
-    });
-    setChallengeForPlayer(null);
-    setAttackerPlayer(attacker);
-    setAttackerTeam(attacker.team);
-      return; // Prekini dalje izvršavanje
+      setAttackMode({
+        attackerId: attacker.id,
+        team: attacker.team,
+      });
+      setChallengeForPlayer(null);
+      setAttackerPlayer(attacker);
+      setAttackerTeam(attacker.team);
+      return; // prekini dalje izvršavanje
     }
   }
 
-  // ⚠️ Pokretanje KOTH samo ako su 4 različita tima u sredini
+  // 3) KOTH LOGIKA
+
+  // timovi koji su u CENTRU u ovom trenutku
   const activeTeams = Object.keys(teamsGrouped).map(Number);
-  // svi timovi koji su sad u centru moraju biti "ready"
-  const allTeamsReady =
-    activeTeams.length === 4 &&
-    activeTeams.every(teamId => teamsReadyForKoth[teamId]);
+
+  // svi ŽIVI timovi (oni koji još imaju barem jednog igrača)
+  const livingTeams = Array.from(
+    new Set(players.map(p => p.team))
+  );
+
+  // ne radimo KOTH ako su 2 tima ostala
+  if (livingTeams.length < 3) return;
+
+  // svi živi timovi su trenutno u centru?
+  const allLivingInCenter =
+    activeTeams.length === livingTeams.length &&
+    livingTeams.every(teamId => activeTeams.includes(teamId));
+
+  // svi živi timovi su već jednom odabrali metu (ready za KOTH)?
+  const allLivingTeamsReady =
+    livingTeams.every(teamId => teamsReadyForKoth[teamId]);
 
   if (
     !kothActive &&
-    allTeamsReady &&
+    allLivingInCenter &&
+    allLivingTeamsReady &&
     !attackMode &&
     !challengeStage
   ) {
     setKothActive(true);
     setKothWinner(null);
     setKothPlayers(
-      Object.values(teamsGrouped).map(players => players[0]) // po 1 igrač iz tima
+      Object.values(teamsGrouped).map(players => players[0]) // po 1 igrač iz svakog tima
     );
     setKothState(prev => ({ ...prev, results: {} }));
   }
 }, [players, kothActive, attackMode, challengeStage, teamsReadyForKoth]);
 
-
 useEffect(() => {
-  if (!kothActive) return;
+  if (!kothActive || kothWinner) return;
 
   // koji timovi sudjeluju u ovoj KOTH rundi (i nisu eliminirani)
   const teamsInKoth = [...new Set(
@@ -140,9 +158,8 @@ useEffect(() => {
   ) {
     handleKothRoundEnd();
   }
-}, [kothActive, kothPlayers, kothState]);
+}, [kothActive, kothPlayers, kothState, kothWinner]);
 
-                //#### useEffecti ####
 
 useEffect(() => {
   if (challengeStage !== 'ready') return;
@@ -151,6 +168,20 @@ useEffect(() => {
   }
 }, [readyStatus, challengeStage]);
 
+
+                        // Safety net da garantira da je currentTeam uvijek active
+useEffect(() => {
+  // ako nema igrača, nema što raditi
+  if (players.length === 0) return;
+
+  const currentTeamAlive = players.some(p => p.team === currentTeam);
+
+  if (!currentTeamAlive) {
+    // ➜ prebaci potez na SLJEDEĆI tim po redu,
+    // koristeći postojeću nextTurn logiku (getNextTeam + isTeamEliminated)
+    nextTurn();
+  }
+}, [players, currentTeam]);
 
 useEffect(() => {
   // Ako već ima aktivan challenge, čekaj
@@ -300,7 +331,6 @@ function handleKothRoundEnd() {
   // round++ i reset rezultata (auto-close effect odradi ostalo)
   setKothState(prev => ({
     ...prev,
-    results: {},
     round: prev.round + 1,
   }));
 }
@@ -321,7 +351,7 @@ function resolveChallenge(attackerWon) {
   const { attackerId, defenderTeam } = challengeForPlayer;
 
   if (attackerWon) {
-    // 👊 Napadač pobijedio → cijeli defending tim ispada
+    //  Napadač pobijedio → cijeli defending tim ispada
     const eliminatedTeam = defenderTeam;
     setPlayers(ps => {
       // 1. makni sve igrače tog tima
@@ -613,7 +643,6 @@ const generateTiles = () => {
         currentTeam={currentTeam}
         onRoll={handleKothRoll}
         winnerTeam={kothWinner}
-        onRoundEnd={handleKothRoundEnd}
         kothRolls={kothState.results}
         isRolling={rolling}
         kothRolling={kothRolling}
