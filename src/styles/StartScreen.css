@@ -1,0 +1,95 @@
+.app-root {
+  min-height: 100vh;
+  background: radial-gradient(circle at top, #1e293b, #020617);
+  color: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* LOBBY */
+
+.lobby {
+  text-align: center;
+  padding: clamp(2rem, 4vw, 4rem);       /* skalira ovisno o širini ekrana */
+  border-radius: 32px;
+  background: rgba(15, 23, 42, 0.9);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+
+  width: clamp(550px, 45vw, 750px);      /* minimalno 400px, max 750px */
+  transform: scale(1.25);                /* 125% povećanje */
+  transform-origin: center;
+  min-height: clamp(380px, 60vh, 600px);
+}
+
+.lobby-title {
+  font-size: clamp(2.8rem, 5vw, 4.5rem);   /* lijepo skaliranje naslova */
+  letter-spacing: 0.18em;
+  margin-bottom: 1rem; 
+  font-weight: border;
+}
+
+.lobby-subtitle {
+  font-size: 0.95rem;
+  opacity: 0.8;
+  margin-bottom: 2rem;
+}
+
+.lobby-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.80rem;
+}
+
+.lobby-btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: 999px;
+  border: none;
+  font-size: 2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.1s ease;
+
+  text-decoration: none;       /* ← makni underline */
+  display: inline-block;       /* ← važno za Link da izgleda kao button */
+}
+
+.lobby-btn.primary {
+  background: #22c55e;
+  color: #022c22;
+  box-shadow: 0 0px 25px rgba(16, 185, 129, 0.5);
+}
+
+.lobby-btn.secondary {
+  background: #0f172a;
+  color: #e5e7eb;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+}
+
+.lobby-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  opacity: 0.95;
+}
+
+.lobby-btn:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.lobby-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5);
+  opacity: 0.95;
+}
+
+.lobby-btn:active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: none;
+}
+
+/* GAME WRAPPER */
+.game-container {
+  width: 100%;
+  height: 100vh;
+}

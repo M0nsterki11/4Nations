@@ -1,14 +1,27 @@
 // src/App.js
-import React from 'react';
-import './App.css';
-import GameBoard from './components/Board/GameBoard';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import GameBoard from "./components/Board/GameBoard";
+import StartScreen from "./components/Screens/StartScreen";
+import SettingsScreen from "./components/Screens/SettingsScreen";
+
+import "./App.css";
 
 function App() {
   return (
-    <div className="App">
-      <GameBoard />
-    </div>
+    <Router>
+      <Routes>
+        {/* Lobby */}
+        <Route path="/" element={<StartScreen />} />
+
+        {/* Settings */}
+        <Route path="/settings" element={<SettingsScreen />} />
+
+        {/* Game */}
+        <Route path="/game" element={<GameBoard />} />
+      </Routes>
+    </Router>
   );
 }
 
 export default App;
+
