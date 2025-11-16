@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
+import doorImg from "../assets/door.png";
 
 export default function LeaveAnimation({
   isLeaving,
@@ -16,12 +17,20 @@ export default function LeaveAnimation({
         >
           {/* Vrata u sredini ekrana */}
           <motion.img
-            src="/img/door.png"
+            src={doorImg}
             alt="Exit door"
             className="leave-door"
             initial={{ scaleX: 1, opacity: 1 }}
-            animate={{ scaleX: 0, opacity: 0 }}
-            transition={{ delay: 0.9, duration: 0.6, ease: "easeInOut" }}
+            animate={{
+              scaleX: 0,
+              opacity: 0,
+              rotateY: 0,   // ostavi 0 jer radi fake 2D opening
+            }}
+            transition={{
+              delay: 0.9,
+              duration: 0.6,
+              ease: "easeInOut"
+            }}
           />
 
           {/* Igrač (emoji) koji doskakuće i ulazi kroz vrata */}

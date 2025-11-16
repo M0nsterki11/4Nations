@@ -44,7 +44,7 @@
   margin-left: 0.35rem;
 }
 
-/* === DICE GUMBI === */
+                          /* ===############ DICE GUMBI ##################=== */
 
 .navbar-dice {
   display: flex;
@@ -167,15 +167,15 @@
   align-items: center;
 }
 
-.leave-btn {
+.leave-button {
   position: absolute;
   top: 50%;
   right: 100px;
   transform: translateY(-50%);
   background: #1e293b;
   color: #e5e7eb;
-  padding: 0.55rem 1.4rem;
-  font-size: 2.5rem;
+  padding: 0.95em 1.9em;
+  font-size: 2.3rem;
   font-weight: 700;
   border-radius: 10px;
 
@@ -194,7 +194,7 @@
   transition: background 0.25s ease, transform 0.2s ease;
 }
 
-.leave-btn:hover {
+.leave-button:hover {
   background: #3b1f27;
   transform: translateY(-50%) scale(1.04);
 }
@@ -209,7 +209,7 @@
   transition: top 0.35s ease, opacity 0.35s ease;
 }
 
-.leave-btn:hover .leave-smiley {
+.leave-button:hover .leave-smiley {
   top: 50%;         
   opacity: 1;
   animation: bounceIn 0.45s ease forwards;
@@ -224,7 +224,7 @@
   opacity: 1;
 }
 
-.leave-btn:hover .leave-text {
+.leave-button:hover .leave-text {
   top: 80%;                 /* spusti tekst prema dolje iz gumba */
   opacity: 0;               /* i fejdni ga */
 }
@@ -245,7 +245,7 @@
 }
 
 
-                  /* ####### GAME ####### */
+                  /* ##################### GAME ################### */
 .game-board {
   position: relative;
   width: 100%;
@@ -456,7 +456,7 @@
 }
 
 
-                     /* ############ LEAVE animacija overlay ############*/
+                     /* ############ LEAVE animacija overlay ############ */
 .leave-overlay {
   position: fixed;
   inset: 0;
@@ -472,11 +472,12 @@
   position: absolute;
   width: 260px; /* prilagodi po potrebi */
   pointer-events: none;
+  transform-origin: center;
 }
 
 .leave-character {
   position: absolute;
-  top: 60%;
+  top: 51%;
   left: 50%;
   transform: translateX(-50%);
   pointer-events: none;
@@ -485,23 +486,4 @@
 .leave-character-icon {
   font-size: 64px;
   text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
-}
-
-/* gumb Leave u navbaru */
-.leave-button {
-  margin-left: auto;
-  margin-right: 70px; /* otprilike koliko si htio od desnog ruba */
-  padding: 6px 14px;
-  border-radius: 999px;
-  border: none;
-  background: #1f2937;
-  color: white;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: transform 0.15s ease, background 0.15s ease;
-}
-
-.leave-button:hover {
-  transform: translateY(-1px) scale(1.03);
-  background: #b91c1c;
 }

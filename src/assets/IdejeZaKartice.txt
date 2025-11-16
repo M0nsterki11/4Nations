@@ -1,0 +1,120 @@
+kad rollaš 6 imaš free bacanje
+
+kad rollaš 1 vratiš svojeg napadača za 1 u rikverc
+
+SUPER IDEJA produljiti rutu nečijeg igrača za 2
+
+Dobiš jedno srce natrag
+
+Imuni si na jedan napad(da te ne izbace iz igre) ali nemožeš bacati kocku sljedeća dva bacanja.
+
+Postavi minu na tuđe polje i ako netko stane vraća se za 4 unatrag
+
+Imuni si na koth rundu jednu (nema veze ako ti je teammate izbačeni ti i dalje možeš napasti az jednu rundu)
+
+Koth se isključi na jednu rundu za sve (generalno se koth isključi)
+
+Sljedeče bacanje svima se oduzme za 2 (ako si bacio 6 onda je 6-2, ako si bacio 2 onda se ne pomičeš, a ako si bacio 1 1-2= -1 onda se vračaš za jedno unatrag)
+
+“Reverse Wind”
+Sljedeći protivnik koji baci → rezultat mu se okreće na suprotni (1↔6, 2↔5, 3↔4).
+
+“Slippery Road”
+Prvo sljedeće negativno polje koje bi aktivirao → ignorira se.
+
+“Cheap Shadow Step”
+Pomakni se 7 polja unaprijed, ali gubiš iduće bacanje.
+
+“Forced March”
+Odaberi igrača – on se pomiče 4 polja naprijed, čak i ako ne želi.
+
+“Boost Pad”
+Na polje na kojem stojiš staviš “boost spot”.
+Tko god stane → +2 naprijed.
+
+                  OBRAMBENE KARTICE
+
+“Divine Shield”
+Ignoriraš sljedeći napad na tebe.
+
+“Iron Body”
+
+Sljedeća 3 bacanja ne možeš biti teleportiran/odguran.
+
+################# MOŽDAAA ########
+“Fortify”
+Ako izgubiš sljedeći challenge → izgubiš 0 HP umjesto 1.
+###################
+
+                    ATTACK kartice
+
+“Forced Duel”
+Možeš pokrenuti challenge protiv bilo kojeg igrača koji je na tvojoj stazi (ne moraš ući u bazu).
+
+"Land Mine"
+Postavi minu na tuđe polje i ako netko stane vraća se za 4 unatrag.
+
+“Trap Swap”
+
+Jednu kartu iz ruke protivnika (ako ima ability kartice) i svoje ruke zamjeniš(možeš odabrati svoju kartu koju želiš).
+
+
+                KOTH kartice
+
+“Royal Blessing”
+U sljedećem KOTH-u automatski dobivaš +1 na roll.
+
+“Tiebreaker”
+Ako je izjednačenje u KOTH-u → pobjeđuješ ti.
+
+“Reverse King”
+U ovom KOTH-u pobjednik su 2 najniža broja, ne najveći.
+
+
+                MAPE kartice
+
+“Black Hole”
+Stvoriš novu crnu rupu na bilo kojem polju.
+
+“New Ability Tile”
+Dodaje ability polje na bilo koje prazno mjesto.
+
+“Seal Zone”
+Odaberi ability polje → postaje deaktivirano do kraja igre.
+
+“Waypoint”
+
+Postaviš “checkpoint” na svoje polje (na to gdje si ju dobio ne na bilo koje).
+Ako izgubiš challenge, vraćaš se tu, ne u centar. (super za 1v1)
+
+
+
+                FUN kartice
+
+“Mirror Fate”
+Sljedeći igrač nakon tebe dobije isti roll kao ti.
+
+“Chaos Roll”
+Sljedeći roll → svi bacaju 3 kocke, koristi se srednji rezultat.
+
+“Card Steal”
+Ukradeš ability karticu od drugog igrača.
+
+"Card add?"
+Dodaš karticu nekome xd
+
+"Trash"
+Ne radi apsolutno ništa(sada smrdiš)
+
+Hungry Molten Snail
+
+Sljedeća dva poteza neki tim (uključujuči tim koji je aktivirao karticu) maksimalno se miče za 2 broja.
+
+"Fake ability Tile”
+Postavi ability polje koje NE radi ništa, samo bait.
+Nakon što netko stane → nestaje i prikaže mu se emoji koji mu se smije.
+
+##### MOŽDAA
+ Whirlwind Swap
+Pomiješaj sve igrače koji su trenutno na istoj stazi (shuffle po pozicijama).
+

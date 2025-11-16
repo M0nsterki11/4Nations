@@ -27,3 +27,11 @@ manje dinamično.
 DOBRA IDEJA 
 Kako ispadaju igraći tj. kad je 2 tima može se koth maknuti ili dodati druga ideja da se igra ubrza-
  tj. kraj osjeća napetiji, brži.
+
+
+
+#####
+Mogućnost spajanja kartiac u jednu (fuzing)
+
+#####
+Defense kartice nemogu vidjeti protivnice koje si aktivirao.

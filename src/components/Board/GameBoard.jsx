@@ -1,16 +1,15 @@
 import { useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom"; 
-import '../../styles/GameBoard.css';
+import { challenges } from '../../data/challenges';
+import { paths } from '../../data/paths';
+
+import "../../styles/GameBoard.css";
 import PlayerToken from '../PlayerToken';
 import Dice from '../Dice';
 import Koth from '../Koth';
 import heartFull from '../../assets/heart_full.png';
 import heartEmpty from '../../assets/heart_empty.png';
-import LeaveAnimation from '../../animations/LeaveAnimation';
-import { challenges } from '../../data/challenges';
-import { paths } from '../../data/paths';
-import { Link } from "react-router-dom";
+import LeaveAnimation from "../../animations/LeaveAnimation"; 
 
 
 // inicijalni igrači iz kvadranta:
@@ -52,22 +51,22 @@ const GameBoard = () => {
   return players.find(p => p.team === currentTeam && !p.isReturning);
   }, [players, currentTeam]);
 
-  // ANIMACIJE ###########################
+      // ANIMACIJE ###########################
   const [isLeaving, setIsLeaving] = useState(false);
   const handleLeave = () => {
-    if (isLeaving) return; // da ne klikneš 5x
-    setIsLeaving(true);
+    if (isLeaving) return;    // da ne klikneš 5x
+    setIsLeaving(true);       // pokreće LeaveAnimation
   };
 
   const handleLeaveComplete = () => {
-    alert("Animacija gotova!");
-    navigate("/");
+    navigate("/");            // kad animacija završi → StartScreen
   };
+
 
   const currentTeamIcon =
     players.find(p => p.team === currentTeam)?.icon || "❓";
 
-  // KOTH Stateovi ############################
+      // KOTH Stateovi ############################
   const [kothRolling, setKothRolling] = useState(false);
   const [kothWinner, setKothWinner] = useState(null);
   const [kothActive, setKothActive] = useState(false);
@@ -382,34 +381,39 @@ function resolveChallenge(attackerWon) {
   const attackingTeamId = attackerPlayerObj ? attackerPlayerObj.team : attackerTeam;
 
   if (attackerWon) {
-    //  Napadač pobijedio → defending tim ispada i gubi oba srca (2 HP)
-    const eliminatedTeam = defenderTeam;
+    // ✅ Napadač pobijedio → defender gubi 1 HP
+    setTeamHearts(prev => {
+      const before = prev[defenderTeam] ?? 0;
+      const newHearts = Math.max(0, before - 1);
 
-    // HP: defending tim na 0
-    setTeamHearts(prev => ({
-      ...prev,
-      [eliminatedTeam]: Math.max(0, (prev[eliminatedTeam] ?? 0) - 2),
-    }));
+      // ako želiš floating ❤️-1, ovdje možeš pozvati showDamage(defenderTeam);
 
-    setPlayers(ps => {
-      // 1. makni sve igrače tog tima
-      const survivors = ps.filter(p => p.team !== eliminatedTeam);
+      // ako je pao na 0 → tim ispada iz igre
+      if (newHearts === 0) {
+        setPlayers(ps => {
+          const survivors = ps.filter(p => p.team !== defenderTeam);
 
-      // 2. svi napadači koji su išli na taj tim vraćaju se u centar
-      return survivors.map(p =>
-        p.isReturning && p.defenderTeam === eliminatedTeam
-          ? {
-              ...p,
-              isReturning: false,
-              defenderTeam: null,
-              step: 0,
-              path: [434],        // centar
-            }
-          : p
-      );
+          // opcionalno: ako želiš resetirati napadače koji su se vraćali
+          return survivors.map(p =>
+            p.isReturning && p.defenderTeam === defenderTeam
+              ? {
+                  ...p,
+                  isReturning: false,
+                  defenderTeam: null,
+                  step: 0,
+                  path: [434], // centar
+                }
+              : p
+          );
+        });
+      }
+
+      return { ...prev, [defenderTeam]: newHearts };
     });
+
+    // ➜ VAŽNO: NEMA više dodatnog setPlayers izvan ovog if-a
   } else {
-    //  Napad nije uspio → ATTACKER gubi 1 HP i vraća se u sredinu
+    // ❌ Napad nije uspio → ATTACKER gubi 1 HP i vraća se u sredinu
     if (attackingTeamId != null) {
       setTeamHearts(prev => ({
         ...prev,
@@ -423,7 +427,7 @@ function resolveChallenge(attackerWon) {
           ? {
               ...p,
               step: 0,
-              path: [434],        // centar
+              path: [434], // centar
               isReturning: false,
               defenderTeam: null,
             }
@@ -572,9 +576,10 @@ const generateTiles = () => {
       {/* NAVBAR */}
     <div className="game-navbar">
         <button className="leave-button" onClick={handleLeave}>
-          Leave
+          <span className="leave-text">Leave</span>
         <span className="leave-smiley">😞</span>
         </button>
+
         <div className="navbar-title">
           <span className="navbar-logo">4NATIONS</span>
           <span className="navbar-turn">
@@ -761,7 +766,7 @@ const generateTiles = () => {
         </div>
       </div>
 
-    <LeaveAnimation
+      <LeaveAnimation
         isLeaving={isLeaving}
         currentIcon={currentTeamIcon}
         onComplete={handleLeaveComplete}
