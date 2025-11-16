@@ -1,10 +1,16 @@
 import { useState, useEffect, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom"; 
 import '../../styles/GameBoard.css';
 import PlayerToken from '../PlayerToken';
 import Dice from '../Dice';
 import Koth from '../Koth';
+import heartFull from '../../assets/heart_full.png';
+import heartEmpty from '../../assets/heart_empty.png';
+import LeaveAnimation from '../../animations/LeaveAnimation';
 import { challenges } from '../../data/challenges';
 import { paths } from '../../data/paths';
+import { Link } from "react-router-dom";
 
 
 // inicijalni igrači iz kvadranta:
@@ -24,6 +30,7 @@ const initialPlayers = [
 
 //POCINJE IGRA
 const GameBoard = () => {
+  const navigate = useNavigate();
   const [isDragging, setIsDragging] = useState(false);
   const [startPoint, setStartPoint] = useState({ x: 0, y: 0 });
   const [offset, setOffset] = useState({ x: 0, y: 0 });
@@ -45,8 +52,22 @@ const GameBoard = () => {
   return players.find(p => p.team === currentTeam && !p.isReturning);
   }, [players, currentTeam]);
 
+  // ANIMACIJE ###########################
+  const [isLeaving, setIsLeaving] = useState(false);
+  const handleLeave = () => {
+    if (isLeaving) return; // da ne klikneš 5x
+    setIsLeaving(true);
+  };
 
-  // KOTH Stateovi
+  const handleLeaveComplete = () => {
+    alert("Animacija gotova!");
+    navigate("/");
+  };
+
+  const currentTeamIcon =
+    players.find(p => p.team === currentTeam)?.icon || "❓";
+
+  // KOTH Stateovi ############################
   const [kothRolling, setKothRolling] = useState(false);
   const [kothWinner, setKothWinner] = useState(null);
   const [kothActive, setKothActive] = useState(false);
@@ -56,6 +77,12 @@ const GameBoard = () => {
     2: false,
     3: false,
     4: false,
+  });
+  const [teamHearts, setTeamHearts] = useState({
+    1: 2,
+    2: 2,
+    3: 2,
+    4: 2,
   });
 
   // Za praćenje tko je kliknuo Ready
@@ -350,9 +377,20 @@ function resolveChallenge(attackerWon) {
 
   const { attackerId, defenderTeam } = challengeForPlayer;
 
+  // pronađi tim napadača prema attackerId
+  const attackerPlayerObj = players.find(p => p.id === attackerId);
+  const attackingTeamId = attackerPlayerObj ? attackerPlayerObj.team : attackerTeam;
+
   if (attackerWon) {
-    //  Napadač pobijedio → cijeli defending tim ispada
+    //  Napadač pobijedio → defending tim ispada i gubi oba srca (2 HP)
     const eliminatedTeam = defenderTeam;
+
+    // HP: defending tim na 0
+    setTeamHearts(prev => ({
+      ...prev,
+      [eliminatedTeam]: Math.max(0, (prev[eliminatedTeam] ?? 0) - 2),
+    }));
+
     setPlayers(ps => {
       // 1. makni sve igrače tog tima
       const survivors = ps.filter(p => p.team !== eliminatedTeam);
@@ -365,20 +403,27 @@ function resolveChallenge(attackerWon) {
               isReturning: false,
               defenderTeam: null,
               step: 0,
-              path: [434],
+              path: [434],        // centar
             }
           : p
       );
     });
   } else {
-    // 🛡 Obrana pobijedila → samo napadač se vraća u centar
+    //  Napad nije uspio → ATTACKER gubi 1 HP i vraća se u sredinu
+    if (attackingTeamId != null) {
+      setTeamHearts(prev => ({
+        ...prev,
+        [attackingTeamId]: Math.max(0, (prev[attackingTeamId] ?? 0) - 1),
+      }));
+    }
+
     setPlayers(ps =>
       ps.map(p =>
         p.id === attackerId
           ? {
               ...p,
               step: 0,
-              path: [434],
+              path: [434],        // centar
               isReturning: false,
               defenderTeam: null,
             }
@@ -396,6 +441,7 @@ function resolveChallenge(attackerWon) {
   setDefenderTeam(null);
   nextTurn();
 }
+
 
   // TEAM ROLL ####
 const handleTeamRoll = () => {
@@ -523,38 +569,87 @@ const generateTiles = () => {
 
   return (
     <div className="game-container">
-      <h2>
-      4Nations — Potez tima:{' '}
-      {players
-    .filter(p => p.team === currentTeam)
-    .map(p => (
-      <span key={p.id} className="current-icon">{p.icon}</span>
-    ))}
-</h2>
-      <div className="dice-buttons">
-  {[1, 2, 3, 4]
-  .filter(teamId => !isTeamEliminated(teamId)) // SKRIVAMO gumb eliminiranih timova
-  .map(teamId => {
-    const teamIcons = players
-      .filter(p => p.team === teamId)
-      .map(p => p.icon)
-      .join(' '); // npr "🌪️ 🌪️"
+      {/* NAVBAR */}
+    <div className="game-navbar">
+        <button className="leave-button" onClick={handleLeave}>
+          Leave
+        <span className="leave-smiley">😞</span>
+        </button>
+        <div className="navbar-title">
+          <span className="navbar-logo">4NATIONS</span>
+          <span className="navbar-turn">
+            — Potez tima:
+            {players
+              .filter(p => p.team === currentTeam)
+              .map(p => (
+                <span key={p.id} className="current-icon">
+                  {p.icon}
+                </span>
+              ))}
+        </span>
+      </div>
 
-    return (
-      <Dice
-        key={teamId}
-        team={teamIcons}
-        onTeamRoll={handleTeamRoll}
-        disabled={
-          rolling ||
-          attackMode !== null ||
-          challengeStage !== null ||
-          teamId !== currentTeam
-        }
-      />
-    );
-  })}
-</div>
+      <div className="navbar-dice">
+        {[1, 2, 3, 4]
+          .filter(teamId => !isTeamEliminated(teamId))
+          .map(teamId => {
+            const teamIcons = players
+              .filter(p => p.team === teamId)
+              .map(p => p.icon)
+              .join(" ");
+
+            // elemental klasa po timu
+            const elementClass =
+              teamId === 1
+                ? "team-air"   // 🌪️
+                : teamId === 2
+                ? "team-earth" // 🌱
+                : teamId === 3
+                ? "team-water" // 💧
+                : "team-fire"; // 🔥
+
+            const isActive = teamId === currentTeam;
+
+            return (
+              <div
+                key={teamId}
+                className={`team-slot ${elementClass} ${
+                  isActive ? "team-slot-active" : ""
+                }`}
+              >
+                <Dice
+                  team={teamIcons}
+                  onTeamRoll={handleTeamRoll}
+                  disabled={
+                    rolling ||
+                    attackMode !== null ||
+                    challengeStage !== null ||
+                    teamId !== currentTeam
+                  }
+                />
+
+                <div className="team-hp-placeholder">
+                <div className="team-hearts">
+                  { [0, 1].map(i => {
+                    const hearts = teamHearts[teamId] ?? 0;
+                    const isFull = i < hearts;
+                    return (
+                      <img
+                        key={i}
+                        src={isFull ? heartFull : heartEmpty}
+                        alt={isFull ? "Full heart" : "Empty heart"}
+                        className="heart-icon"
+                            />
+                          );
+                        })
+                      }
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+      </div>
+    </div>
     
     {attackMode && (
   (() => {
@@ -665,6 +760,12 @@ const generateTiles = () => {
           <div className="grid">{generateTiles()}</div>
         </div>
       </div>
+
+    <LeaveAnimation
+        isLeaving={isLeaving}
+        currentIcon={currentTeamIcon}
+        onComplete={handleLeaveComplete}
+      />
 
   {winnerTeam !== null && (
   <>
