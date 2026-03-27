@@ -4,6 +4,7 @@ import { challenges } from '../../data/challenges';
 import { paths } from '../../data/paths';
 
 import "../../styles/GameBoard.css";
+import "../../styles/Dice.css";
 import PlayerToken from '../PlayerToken';
 import Dice from '../Dice';
 import Koth from '../Koth';
@@ -83,6 +84,9 @@ const GameBoard = () => {
     3: 2,
     4: 2,
   });
+
+  const [damagePopups, setDamagePopups] = useState([]);
+  const [portalRoll, setPortalRoll] = useState(null); // shape: { team, roll1, roll2, showDice: boolean }
 
   // Za praćenje tko je kliknuo Ready
   const [readyStatus, setReadyStatus] = useState({});
@@ -371,6 +375,20 @@ function nextTurn() {
   setRolling(false);
 }
 
+const showDamage = (teamId, amount = 1) => {
+    const id = Date.now() + Math.random();
+
+    setDamagePopups(prev => [
+      ...prev,
+      { id, teamId, amount }
+    ]);
+
+    // makni popup nakon 0.8s
+    setTimeout(() => {
+      setDamagePopups(prev => prev.filter(p => p.id !== id));
+    }, 800);
+  };
+
 function resolveChallenge(attackerWon) {
   if (!challengeForPlayer) return;
 
@@ -386,7 +404,9 @@ function resolveChallenge(attackerWon) {
       const before = prev[defenderTeam] ?? 0;
       const newHearts = Math.max(0, before - 1);
 
-      // ako želiš floating ❤️-1, ovdje možeš pozvati showDamage(defenderTeam);
+      if (newHearts < before) {
+        showDamage(defenderTeam, 1);
+      }
 
       // ako je pao na 0 → tim ispada iz igre
       if (newHearts === 0) {
@@ -410,17 +430,29 @@ function resolveChallenge(attackerWon) {
 
       return { ...prev, [defenderTeam]: newHearts };
     });
-
-    // ➜ VAŽNO: NEMA više dodatnog setPlayers izvan ovog if-a
-  } else {
-    // ❌ Napad nije uspio → ATTACKER gubi 1 HP i vraća se u sredinu
+  } 
+    else {
+    //  Napad nije uspio → ATTACKER gubi 1 HP i vraća se u sredinu
     if (attackingTeamId != null) {
-      setTeamHearts(prev => ({
-        ...prev,
-        [attackingTeamId]: Math.max(0, (prev[attackingTeamId] ?? 0) - 1),
-      }));
+      setTeamHearts(prev => {
+        const before = prev[attackingTeamId] ?? 0;
+        const newHearts = Math.max(0, before - 1);
+
+        if (newHearts < before) {
+          showDamage(attackingTeamId, 1);
+        }
+        if (newHearts === 0) {
+          setPlayers(ps => ps.filter(p => p.team !== attackingTeamId));
+        }
+
+        return {
+          ...prev,
+          [attackingTeamId]: newHearts,
+        };
+      });
     }
 
+    // napadač se vraća u centar SAMO ako tim još postoji
     setPlayers(ps =>
       ps.map(p =>
         p.id === attackerId
@@ -449,60 +481,87 @@ function resolveChallenge(attackerWon) {
 
   // TEAM ROLL ####
 const handleTeamRoll = () => {
-  if (attackMode || challengeStage) return; // blokiraj sve dok traje izazov
-
-  if (
-    rolling ||
-    attackMode !== null ||
-    challengeStage !== null
-  ) return;
+  // blokiraj dok traje challenge / KOTH modal
+  if (attackMode || challengeStage) return;
+  if (rolling) return;
+  if (portalRoll !== null) return;
 
   setRolling(true);
 
   const roll1 = Math.floor(Math.random() * 6) + 1;
   const roll2 = Math.floor(Math.random() * 6) + 1;
 
-  // 1. Pomicanje oba člana tima koji NISU u centru
-  setPlayers(ps =>
-    ps.map(p => {
-      if (
-  p.team === currentTeam &&
-  !centerTiles.has(repIndex(p.path[p.step]))
-) {
-  // pronađi teammate
-  const teammate = ps.find(tp =>
-    tp.team === currentTeam &&
-    tp.id !== p.id
-  );
+  // 🔮 0) Odmah pokaži PORTAL, ali bez kocke
+  setPortalRoll({
+    team: currentTeam,
+    roll1,
+    roll2,
+    showDice: false,
+  });
 
-  // ako je p napadač (isReturning == true), onda teammate mora biti u centru
-  if (p.isReturning && teammate && !centerTiles.has(repIndex(teammate.path[teammate.step]))) {
-    return p; // NE pomiči napadača dok teammate nije u centru
-  }
-        const roll = p.role === 'first' ? roll1 : roll2;
-        return {
-          ...p,
-          step: Math.min(p.step + roll, p.path.length - 1)
-        };
-      }
-      return p;
-    })
-  );
+  // ⏱ 1) Nakon 1 sekunde – pojavi se kocka u portalu
+  setTimeout(() => {
+    setPortalRoll(prev =>
+      prev ? { ...prev, showDice: true } : prev
+    );
+  }, 800);
 
-  // 2. Ako ovaj tim ima igrača u centru, onda bacaj za KOTH
-  const inCenter = players.some(p =>
-    p.team === currentTeam &&
-    centerTiles.has(repIndex(p.path[p.step]))
-  );
-
-  if (kothActive && inCenter) {
-    handleKothRoll(currentTeam);
-  }
+  // ⏱ 2) Nakon ... sekunde – odradi pomicanje, KOTH i nextTurn
+  const MOVE_DELAY = 1800;
 
   setTimeout(() => {
+    // 1) pomicanje oba člana tima koji NISU u centru
+    setPlayers(ps =>
+      ps.map(p => {
+        if (
+          p.team === currentTeam &&
+          !centerTiles.has(repIndex(p.path[p.step]))
+        ) {
+          // pronađi teammate-a
+          const teammate = ps.find(
+            tp => tp.team === currentTeam && tp.id !== p.id
+          );
+
+          // ako je p napadač (isReturning == true),
+          // teammate mora biti u centru – inače NE mičemo napadača
+          if (
+            p.isReturning &&
+            teammate &&
+            !centerTiles.has(repIndex(teammate.path[teammate.step]))
+          ) {
+            return p;
+          }
+
+          const roll = p.role === "first" ? roll1 : roll2;
+          return {
+            ...p,
+            step: Math.min(p.step + roll, p.path.length - 1),
+          };
+        }
+        return p;
+      })
+    );
+
+    // 2) Ako ovaj tim ima igrača u centru, onda bacaj za KOTH
+    const inCenter = players.some(
+      p =>
+        p.team === currentTeam &&
+        centerTiles.has(repIndex(p.path[p.step]))
+    );
+
+    if (kothActive && inCenter) {
+      handleKothRoll(currentTeam);
+    }
+
+    // 3) kraj poteza
     setRolling(false);
-    setCurrentTeam(t => (t === 4 ? 1 : t + 1));
-  }, 300);
+    nextTurn();
+  }, MOVE_DELAY);
+
+  //  3) Nakon ...sekundi – makni portal potpuno
+  setTimeout(() => {
+    setPortalRoll(null);
+  }, 3100);
 };
 
 
@@ -521,7 +580,12 @@ const handleTeamRoll = () => {
   const handleMouseUp = () => setIsDragging(false);
 
 
-// GENERACIJA MAPE I TOK IGRE
+
+
+
+
+//              ###################  GENERACIJA MAPE I TOK IGRE  #####################
+
 
 const generateTiles = () => {
   const tiles = [];
@@ -593,7 +657,22 @@ const generateTiles = () => {
               ))}
         </span>
       </div>
-
+        {portalRoll && (
+          <div className="portal-overlay">
+            <div className="portal-circle">
+              {portalRoll.showDice && (
+                <div className="portal-dice">
+                  <div className="portal-dice-face">
+                    {portalRoll.roll1 + portalRoll.roll2}
+                  </div>
+                  <div className="portal-dice-team">
+                    Tim {portalRoll.team}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       <div className="navbar-dice">
         {[1, 2, 3, 4]
           .filter(teamId => !isTeamEliminated(teamId))
@@ -628,27 +707,35 @@ const generateTiles = () => {
                   disabled={
                     rolling ||
                     attackMode !== null ||
+                    portalRoll !== null || 
                     challengeStage !== null ||
                     teamId !== currentTeam
                   }
                 />
 
                 <div className="team-hp-placeholder">
-                <div className="team-hearts">
-                  { [0, 1].map(i => {
-                    const hearts = teamHearts[teamId] ?? 0;
-                    const isFull = i < hearts;
-                    return (
-                      <img
-                        key={i}
-                        src={isFull ? heartFull : heartEmpty}
-                        alt={isFull ? "Full heart" : "Empty heart"}
-                        className="heart-icon"
-                            />
-                          );
-                        })
-                      }
+                  <div className="team-hearts">
+                    {[0, 1].map(i => {
+                      const hearts = teamHearts[teamId] ?? 0;
+                      const isFull = i < hearts;
+                      return (
+                        <img
+                          key={i}
+                          src={isFull ? heartFull : heartEmpty}
+                          alt={isFull ? "Full heart" : "Empty heart"}
+                          className="heart-icon"
+                        />
+                      );
+                    })}
                   </div>
+
+                  {damagePopups
+                    .filter(p => p.teamId === teamId)
+                    .map(p => (
+                      <div key={p.id} className="damage-popup">
+                        ❤️-1
+                      </div>
+                    ))}
                 </div>
               </div>
             );

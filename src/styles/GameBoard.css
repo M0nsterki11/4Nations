@@ -141,19 +141,6 @@
   min-height: 1rem; /* rezerviraj visinu i kad nema ništa */
 }
 
-.team-hearts {
-  display: flex;
-  gap: 0.4rem;
-  align-items: center;
-}
-
-.heart-icon {
-  width: 34px;                   /* prilagodi po želji */
-  height: auto;
-  display: block;
-  filter: drop-shadow(0 0 4px rgba(0,0,0,0.6));
-}
-
 
                 /* ######### LEAVE BUTTON ######## */
 .leave-slot {
@@ -396,6 +383,53 @@
   z-index: 10;
 }
 
+                        /* ################# HP SRCA ################ */
+
+.team-hp-placeholder {
+  margin-top: 0.35rem;
+  min-height: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;      /* bitno za damage popup */
+}
+
+.team-hearts {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.heart-icon {
+  width: 22px;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 0 4px rgba(0,0,0,0.6));
+}
+
+.damage-popup {
+  position: absolute;
+  bottom: -2px;
+  font-size: 0.85rem;
+  color: #f97373;
+  text-shadow: 0 0 4px rgba(0,0,0,0.7);
+  animation: damageFloat 0.8s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes damageFloat {
+  0% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-12px);
+    opacity: 0;
+  }
+}
 
 .challenge-modal {
   position: fixed;
