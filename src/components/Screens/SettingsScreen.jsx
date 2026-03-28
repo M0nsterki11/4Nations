@@ -1,24 +1,24 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import FloatingEmblems from "./FloatingEmblems";
 import "../../styles/StartScreen.css";
 import "../../styles/Settings.css";
 
-const elementalIcons = ["🌪️", "🌱", "💧", "🔥"];
 const settingsCards = [
   {
-    title: "Match Rules",
-    text: "Kasnije ces ovdje moci slagati broj srca, trajanje partije i win conditions.",
+    title: "Arena Rules",
+    text: "Kasnije ces ovdje slagati broj srca, tempo meca i uvjete pobjede za svaku bitku.",
   },
   {
-    title: "Audio",
-    text: "Mjesto za glasnocu, ambience i sitne UI zvukove kad ih dodas u igru.",
+    title: "Battle Audio",
+    text: "Mjesto za glasnocu, ambience i udarne UI zvukove kad ih dodas u arenu.",
   },
   {
-    title: "Visuals",
-    text: "Efekti, animacije i tempo meca mogu ici ovdje kad budes htio vise kontrole.",
+    title: "Arena Visuals",
+    text: "Efekti, animacije i tempo prezentacije mogu ici ovdje kad budes htio vise kontrole.",
   },
   {
-    title: "Players",
+    title: "Warband Setup",
     text: "Broj igraca, tim setup i eventualni custom modovi mogu kasnije ici u ovaj blok.",
   },
 ];
@@ -32,26 +32,17 @@ function SettingsScreen() {
         <span className="start-orb start-orb-water" />
         <span className="start-orb start-orb-fire" />
 
-        <div className="start-emblems">
-          {elementalIcons.map((icon, index) => (
-            <span
-              key={icon}
-              className={`start-emblem start-emblem-${index + 1}`}
-            >
-              {icon}
-            </span>
-          ))}
-        </div>
+        <FloatingEmblems />
       </div>
 
       <div className="lobby start-lobby settings-lobby">
-        <div className="start-badge settings-badge">Control Chamber</div>
+        <div className="start-badge settings-badge">War Council</div>
 
-        <h1 className="lobby-title settings-title">Settings</h1>
+        <h1 className="lobby-title settings-title">Arena Settings</h1>
 
         <p className="lobby-subtitle settings-subtitle">
-          Ekran je sada povezan sa start menijem i spreman da kasnije primi
-          prave opcije igre, zvukova i vizualnih postavki.
+          Pripremi bojiste prije ulaska u arenu. Ovdje ce kasnije zivjeti sva
+          pravila meca, zvukovi i vizualne postavke tvoje bitke.
         </p>
 
         <div className="settings-grid">
@@ -59,7 +50,7 @@ function SettingsScreen() {
             <div key={card.title} className="settings-card">
               <div className="settings-card-header">
                 <h3 className="settings-card-title">{card.title}</h3>
-                <span className="settings-chip">Soon</span>
+                <span className="settings-chip">Forging</span>
               </div>
               <p className="settings-card-text">{card.text}</p>
             </div>
@@ -68,11 +59,11 @@ function SettingsScreen() {
 
         <div className="lobby-buttons settings-actions">
           <Link to="/game" className="lobby-btn primary">
-            Launch Match
+            Enter Arena
           </Link>
 
           <Link to="/" className="lobby-btn secondary">
-            Back To Menu
+            Return To Gate
           </Link>
         </div>
       </div>

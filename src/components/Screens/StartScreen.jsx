@@ -1,10 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import FloatingEmblems from "./FloatingEmblems";
 import "../../styles/StartScreen.css";
 
 function StartScreen() {
-  const elementalIcons = ["🌪️", "🌱", "💧", "🔥"];
-  const menuHighlights = ["4 Teams", "8 Players", "1 Throne"];
+  const menuHighlights = ["4 Nations", "8 Warriors", "1 Throne"];
 
   return (
     <div className="app-root start-screen">
@@ -14,28 +14,19 @@ function StartScreen() {
         <span className="start-orb start-orb-water" />
         <span className="start-orb start-orb-fire" />
 
-        <div className="start-emblems">
-          {elementalIcons.map((icon, index) => (
-            <span
-              key={icon}
-              className={`start-emblem start-emblem-${index + 1}`}
-            >
-              {icon}
-            </span>
-          ))}
-        </div>
+        <FloatingEmblems />
       </div>
 
       <div className="lobby start-lobby">
-        <div className="start-badge">Elemental Arena</div>
+        <div className="start-badge">Arena of Elements</div>
 
         <h1 className="lobby-title">
           <span className="start-title-accent">4NATIONS</span>
         </h1>
 
         <p className="lobby-subtitle">
-          King of the Hill board game where rival elements race for the center
-          and hold the throne.
+          Enter the elemental arena, rush the center and fight to keep the
+          throne before the rival nations take it from you.
         </p>
 
         <div className="start-highlights">
@@ -48,15 +39,15 @@ function StartScreen() {
 
         <div className="lobby-buttons">
           <Link to="/game" className="lobby-btn primary">
-            Start Adventure
+            Enter Arena
           </Link>
 
           <Link to="/settings" className="lobby-btn secondary">
-            Open Settings
+            Visit War Council
           </Link>
         </div>
 
-        <p className="start-footer">Choose your element. Take the center.</p>
+        <p className="start-footer">Choose your nation. Claim the throne.</p>
       </div>
     </div>
   );
