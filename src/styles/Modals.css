@@ -1,0 +1,75 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+}
+
+.attack-modal,
+.challenge-modal,
+.winner-modal {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 12px;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.38);
+}
+
+.attack-modal,
+.challenge-modal {
+  background: #222;
+  color: #fff;
+  padding: 1.5rem;
+}
+
+.attack-modal {
+  top: 30%;
+  z-index: 1000;
+}
+
+.attack-modal button {
+  margin: 0.5rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.challenge-modal {
+  top: 20%;
+  z-index: 1001;
+}
+
+.challenge-modal button {
+  display: block;
+  margin: 0.5rem 0;
+}
+
+.winner-modal {
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  color: #222;
+  z-index: 1000;
+  padding: 40px 50px 30px;
+  text-align: center;
+  min-width: 300px;
+}
+
+.winner-modal h2 {
+  margin-bottom: 16px;
+}
+
+.winner-modal button {
+  margin-top: 20px;
+  padding: 8px 22px;
+  font-size: 18px;
+  border-radius: 6px;
+  border: none;
+  background: #1e90ff;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.winner-modal button:hover {
+  background: #1768c5;
+}

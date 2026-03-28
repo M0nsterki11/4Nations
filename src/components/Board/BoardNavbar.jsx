@@ -1,4 +1,12 @@
+import DiceRollAnimation from "../../animations/DiceRollAnimation";
+import frame1 from "../../assets/frame1.png";
+import frame2 from "../../assets/frame2.png";
+import frame3 from "../../assets/frame3.png";
+import frame4 from "../../assets/frame4.png";
+import frame5 from "../../assets/frame5.png";
+import frame6 from "../../assets/frame6.png";
 import Dice from "../Dice";
+import "../../styles/NavBar.css";
 import heartEmpty from "../../assets/heart_empty.png";
 import heartFull from "../../assets/heart_full.png";
 import {
@@ -7,22 +15,27 @@ import {
   getTeamIcons,
 } from "./mapHelpers";
 
-function PortalRollOverlay({ portalRoll }) {
+const diceRollFrames = [frame1, frame2, frame3, frame4, frame5, frame6];
+
+function PortalRollOverlay({ onComplete, portalRoll }) {
   if (!portalRoll) {
     return null;
   }
 
   return (
-    <div className="portal-overlay">
-      <div className="portal-circle">
-        {portalRoll.showDice && (
-          <div className="portal-dice">
-            <div className="portal-dice-face">
-              {portalRoll.roll1 + portalRoll.roll2}
-            </div>
-            <div className="portal-dice-team">Tim {portalRoll.team}</div>
-          </div>
-        )}
+    <div className="dice-roll-overlay">
+      <div
+        className="dice-roll-portal"
+        style={{ "--dice-roll-duration": `${portalRoll.duration}ms` }}
+      >
+        <DiceRollAnimation
+          key={portalRoll.id}
+          frames={diceRollFrames}
+          isRolling={portalRoll.isRolling}
+          duration={portalRoll.duration}
+          onComplete={onComplete}
+        />
+        <div className="dice-roll-team-label">Tim {portalRoll.team}</div>
       </div>
     </div>
   );
@@ -88,6 +101,7 @@ function BoardNavbar({
   isDiceLocked,
   isTeamEliminated,
   onLeave,
+  onRollAnimationComplete,
   onTeamRoll,
   players,
   portalRoll,
@@ -114,7 +128,10 @@ function BoardNavbar({
         </span>
       </div>
 
-      <PortalRollOverlay portalRoll={portalRoll} />
+      <PortalRollOverlay
+        onComplete={onRollAnimationComplete}
+        portalRoll={portalRoll}
+      />
 
       <div className="navbar-dice">
         {TEAM_IDS.filter((teamId) => !isTeamEliminated(teamId)).map((teamId) => (

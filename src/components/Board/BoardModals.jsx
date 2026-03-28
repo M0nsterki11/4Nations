@@ -1,3 +1,4 @@
+import "../../styles/Modals.css";
 import { getValidAttackTargets } from "./mapHelpers";
 
 export function AttackModal({ attackMode, onSelectTarget, players }) {

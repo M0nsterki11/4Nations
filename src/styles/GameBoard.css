@@ -1,238 +1,3 @@
-/* === NAVBAR === */
-
-.game-navbar {
-  width: 100%;
-  background: rgba(15, 23, 42, 0.96);
-  padding: 0.9rem 1.8rem 1.2rem;
-  border-bottom: 2px solid rgba(148, 163, 184, 0.25);
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.6);
-  
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-
-  position: sticky;                      /* NE MIČE SE kod scrollanja */
-  position: relative;
-  top: 0;
-  z-index: 10;
-}
-
-.navbar-title {
-  font-size: 1.7rem;
-  letter-spacing: 0.08em;
-  display: flex;
-  align-items: baseline;
-  gap: 0.75rem;
-  color: #e5e7eb;
-}
-
-.navbar-logo {
-  font-size: 1.6rem;
-  letter-spacing: 0.18em;
-  font-weight: 800;
-}
-
-.navbar-turn {
-  font-size: 1rem;
-  opacity: 0.9;
-}
-
-/* ikona tima koji igra */
-.current-icon {
-  font-size: 1.8rem;
-  margin-left: 0.35rem;
-}
-
-                          /* ===############ DICE GUMBI ##################=== */
-
-.navbar-dice {
-  display: flex;
-  gap: 1.2rem;
-  /*margin-top: 0.5rem;*/
-  justify-content: center;
-  padding-bottom: 0.7rem; /*dodatni prostor za HP ispod gumbova */
-}
-
-.team-slot {
-  --team-color: #fff;
-  background: rgba(15, 23, 42, 0.9);
-  border-radius: 999px;
-  padding: 0.25rem 0.4rem 0.7rem;
-  box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.9);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 150px;
-}
-
-.team-air   { --team-color: #38bdf8; } /* svijetlo plava */
-.team-earth { --team-color: #22c55e; } /* zelena */
-.team-water { --team-color: #3b82f6; } /* plava */
-.team-fire  { --team-color: #f97316; } /* narančasta */
-
-.team-slot-active {
-  box-shadow:
-    0 0 0 2px var(--team-color),
-    0 0 18px rgba(0, 0, 0, 0.7);
-  animation: teamGlow 1.3s ease-in-out infinite;
-}
-
-@keyframes teamGlow {
-  0% {
-    transform: translateY(0);
-    box-shadow:
-      0 0 0 1px var(--team-color),
-      0 0 8px rgba(148, 163, 184, 0.4);
-  }
-  50% {
-    transform: translateY(-1px);
-    box-shadow:
-      0 0 0 2px var(--team-color),
-      0 0 20px color-mix(in srgb, var(--team-color) 60%, #0f172a 40%);
-  }
-  100% {
-    transform: translateY(0);
-    box-shadow:
-      0 0 0 1px var(--team-color),
-      0 0 8px rgba(148, 163, 184, 0.4);
-  }
-}
-
-.dice-btn {
-  padding: 0.55rem 1.1rem;
-  border-radius: 999px;
-  border: none;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  background: #111827;
-  color: #e5e7eb;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
-  transition: transform 0.12s ease, box-shadow 0.12s ease,
-    background-color 0.12s ease, opacity 0.12s ease;
-
-  text-decoration: none;
-  display: inline-block;
-}
-
-.team-slot:hover .dice-btn:not(:disabled) {
-  background: color-mix(in srgb, var(--team-color) 28%, #111827 72%);
-}
-
-.dice-btn:disabled {
-  background: #020617;
-  color: #64748b;
-  box-shadow: none;
-  cursor: not-allowed;
-}
-
-.dice-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
-  background: #475569;
-}
-
-.team-hp-placeholder {
-  margin-top: 0.1rem;
-  font-size: 0.75rem;
-  color: #e5e7eb;
-  opacity: 0.75;
-  min-height: 1rem; /* rezerviraj visinu i kad nema ništa */
-}
-
-
-                /* ######### LEAVE BUTTON ######## */
-.leave-slot {
-  background: rgba(15, 23, 42, 0.9);
-  border-radius: 999px;
-  padding: 0.25rem 0.7rem 0.7rem;
-  min-width: 150px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.leave-button {
-  position: absolute;
-  top: 50%;
-  right: 100px;
-  transform: translateY(-50%);
-  background: #1e293b;
-  color: #e5e7eb;
-  padding: 0.95em 1.9em;
-  font-size: 2.3rem;
-  font-weight: 700;
-  border-radius: 10px;
-
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  overflow: hidden;
-  width: 110px;
-  height: 40px;
-
-  cursor: pointer;
-  text-decoration: none;
-
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  transition: background 0.25s ease, transform 0.2s ease;
-}
-
-.leave-button:hover {
-  background: #3b1f27;
-  transform: translateY(-50%) scale(1.04);
-}
-
-.leave-smiley {
-  position: absolute;
-  top: -35px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 2.2rem;
-  opacity: 0;
-  transition: top 0.35s ease, opacity 0.35s ease;
-}
-
-.leave-button:hover .leave-smiley {
-  top: 50%;         
-  opacity: 1;
-  animation: bounceIn 0.45s ease forwards;
-}
-
-.leave-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  transition: all 0.35s ease;
-  opacity: 1;
-}
-
-.leave-button:hover .leave-text {
-  top: 80%;                 /* spusti tekst prema dolje iz gumba */
-  opacity: 0;               /* i fejdni ga */
-}
-
-@keyframes bounceIn {
-  0% {
-    transform: translate(-50%, -60%) scale(0.6);
-  }
-  50% {
-    transform: translate(-50%, -52%) scale(1.15);
-  }
-  70% {
-    transform: translate(-50%, -50%) scale(0.92);
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-
-                  /* ##################### GAME ################### */
 .game-board {
   position: relative;
   width: 100%;
@@ -256,7 +21,6 @@
   padding: 10px;
 }
 
-
 .center {
   grid-area: 2 / 2;
   background-color: #ffeaa7;
@@ -276,7 +40,6 @@
 }
 
 .big-map {
-  /* Podesi na istu veličinu kao grid (= 30 × 100px + 29 × gap) */
   width: 3029px;
   height: 3029px;
   position: absolute;
@@ -289,19 +52,16 @@
   display: grid;
   grid-template-columns: repeat(30, 100px);
   grid-template-rows: repeat(30, 100px);
-  gap: 1px;                /* gap po želji */
-  
-  width: 3000px;           /* 30×100 */
-  height: 3000px;          /* 30×100 */
-  
-  background-image: url('../assets/board-bg.png');
-  background-size: 3000px 3000px; /* točno dimenzije mape */
-  background-position: 0 0;       /* top-left usklađeno sa prvim tileom */
+  gap: 1px;
+  width: 3000px;
+  height: 3000px;
+  background-image: url("../assets/board-bg.png");
+  background-size: 3000px 3000px;
+  background-position: 0 0;
   background-repeat: no-repeat;
 }
 
 .tile {
-  /* Neka tile popuni cijelu svoju grid ćeliju */
   width: 100%;
   height: 100%;
   display: flex;
@@ -309,14 +69,13 @@
   justify-content: center;
   font-size: 14px;
   border: 1px solid #999;
-  background-color: rgba(204,204,204,0.5);
+  background-color: rgba(204, 204, 204, 0.5);
   user-select: none;
 }
 
 .center-2x2 {
-  /* Centar točno na sredini mreže */
-  grid-row: 15 / span 2;   /* ćelije redova 15 i 16 */
-  grid-column: 15 / span 2;/* ćelije stupaca 15 i 16 */
+  grid-row: 15 / span 2;
+  grid-column: 15 / span 2;
   background-color: #333;
   color: #ffe;
   display: flex;
@@ -325,172 +84,30 @@
   font-weight: bold;
 }
 
-.quadrant-1 { /* vjetar */    background-color: rgba(173,216,230,0.1); }
-.quadrant-2 { /* zemlja */    background-color: rgba(144,238,144,0.1); }
-.quadrant-3 { /* vatra */     background-color: rgba(255,160,122,0.1); }
-.quadrant-4 { /* voda */      background-color: rgba(135,206,250,0.1); }
-
-
-.path-tile {
-  background-color: rgba(255,255,0,0.3) !important;
+.quadrant-1 {
+  background-color: rgba(173, 216, 230, 0.1);
 }
 
+.quadrant-2 {
+  background-color: rgba(144, 238, 144, 0.1);
+}
+
+.quadrant-3 {
+  background-color: rgba(255, 160, 122, 0.1);
+}
+
+.quadrant-4 {
+  background-color: rgba(135, 206, 250, 0.1);
+}
+
+.path-tile {
+  background-color: rgba(255, 255, 0, 0.3) !important;
+}
 
 .path1-tile {
   background-color: rgba(255, 215, 0, 0.5) !important;
-  /* po želji: border: 2px solid gold; */
 }
 
-
-.attack-modal {
-  position: absolute;
-  top: 30%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0,0,0,0.8);
-  padding: 1rem 2rem;
-  border-radius: 8px;
-  color: #fff;
-  z-index: 10;
-}
-.attack-modal button {
-  margin: 0.5rem;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-}
-
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.6);
-  z-index: 9;
-}
-
-/* Tvoj modal neka ima veći z-index */
-.attack-modal {
-  position: fixed;
-  top: 30%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #222;
-  color: #fff;
-  padding: 1.5rem;
-  border-radius: 8px;
-  z-index: 10;
-}
-
-                        /* ################# HP SRCA ################ */
-
-.team-hp-placeholder {
-  margin-top: 0.35rem;
-  min-height: 26px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;      /* bitno za damage popup */
-}
-
-.team-hearts {
-  display: flex;
-  gap: 0.4rem;
-  align-items: center;
-}
-
-.heart-icon {
-  width: 22px;
-  height: auto;
-  display: block;
-  filter: drop-shadow(0 0 4px rgba(0,0,0,0.6));
-}
-
-.damage-popup {
-  position: absolute;
-  bottom: -2px;
-  font-size: 0.85rem;
-  color: #f97373;
-  text-shadow: 0 0 4px rgba(0,0,0,0.7);
-  animation: damageFloat 0.8s ease-out forwards;
-  pointer-events: none;
-}
-
-@keyframes damageFloat {
-  0% {
-    transform: translateY(10px);
-    opacity: 0;
-  }
-  25% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-12px);
-    opacity: 0;
-  }
-}
-
-.challenge-modal {
-  position: fixed;
-  top: 20%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #333;
-  padding: 1.5rem;
-  border-radius: 8px;
-  color: #fff;
-  z-index: 11;
-}
-
-.challenge-modal button {
-  display: block;
-  margin: 0.5rem 0;
-}
-
-/*WINNER MODUL*/
-.modal-overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.5);
-  z-index: 999;
-}
-
-.winner-modal {
-  position: fixed;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  background: #fff;
-  color: #222;
-  border-radius: 18px;
-  box-shadow: 0 0 32px rgba(0,0,0,0.2);
-  z-index: 1000;
-  padding: 40px 50px 30px 50px;
-  text-align: center;
-  min-width: 300px;
-}
-
-.winner-modal h2 {
-  margin-bottom: 16px;
-}
-.winner-modal button {
-  margin-top: 20px;
-  padding: 8px 22px;
-  font-size: 18px;
-  border-radius: 6px;
-  border: none;
-  background: #1e90ff;
-  color: #fff;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.winner-modal button:hover {
-  background: #1768c5;
-}
-
-
-                     /* ############ LEAVE animacija overlay ############ */
 .leave-overlay {
   position: fixed;
   inset: 0;
@@ -499,12 +116,12 @@
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  pointer-events: none; /* da ne blokira klikove ako ikad ostane prikazano */
+  pointer-events: none;
 }
 
 .leave-door {
   position: absolute;
-  width: 260px; /* prilagodi po potrebi */
+  width: 260px;
   pointer-events: none;
   transform-origin: center;
 }

@@ -1,3 +1,4 @@
+import '../styles/Modals.css';
 import '../styles/Koth.css';
 
 // kothPlayers = array od 4 igrača (po 1 iz svakog tima u sredini)

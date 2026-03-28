@@ -1,0 +1,123 @@
+.settings-screen .start-orb-air {
+  opacity: 0.48;
+}
+
+.settings-screen .start-orb-fire {
+  opacity: 0.42;
+}
+
+.settings-lobby {
+  width: min(860px, calc(100vw - 2rem));
+  min-height: auto;
+  gap: 1.4rem;
+}
+
+.settings-badge {
+  border-color: rgba(249, 115, 22, 0.26);
+  box-shadow: 0 0 24px rgba(249, 115, 22, 0.12);
+}
+
+.settings-title {
+  letter-spacing: 0.16em;
+}
+
+.settings-subtitle {
+  max-width: 40rem;
+}
+
+.settings-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.settings-card {
+  position: relative;
+  padding: 1rem 1.05rem 1.1rem;
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.82), rgba(2, 6, 23, 0.74)),
+    radial-gradient(circle at top, rgba(56, 189, 248, 0.08), transparent 42%);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 14px 32px rgba(2, 6, 23, 0.22);
+  text-align: left;
+  overflow: hidden;
+}
+
+.settings-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    transparent 35%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 65%,
+    transparent 100%
+  );
+  transform: translateX(-120%);
+  transition: transform 0.8s ease;
+}
+
+.settings-card:hover::before {
+  transform: translateX(120%);
+}
+
+.settings-card:hover {
+  border-color: rgba(56, 189, 248, 0.24);
+  transform: translateY(-2px);
+}
+
+.settings-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 0.75rem;
+}
+
+.settings-card-title {
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f8fafc;
+}
+
+.settings-chip {
+  padding: 0.28rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(249, 115, 22, 0.14);
+  border: 1px solid rgba(249, 115, 22, 0.26);
+  color: #fdba74;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.settings-card-text {
+  margin: 0;
+  line-height: 1.65;
+  color: rgba(226, 232, 240, 0.8);
+  font-size: 0.95rem;
+}
+
+.settings-actions {
+  width: min(100%, 460px);
+  margin-top: 0.35rem;
+}
+
+@media (max-width: 760px) {
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-lobby {
+    gap: 1.15rem;
+  }
+}

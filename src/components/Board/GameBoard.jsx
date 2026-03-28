@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { challenges } from "../../data/challenges";
 import { paths } from "../../data/paths";
@@ -43,8 +43,11 @@ const initialTeamHearts = {
   4: 2,
 };
 
+const ROLL_ANIMATION_DURATION = 1100;
+
 const GameBoard = () => {
   const navigate = useNavigate();
+  const rollTimeoutRef = useRef(null);
 
   const [isDragging, setIsDragging] = useState(false);
   const [startPoint, setStartPoint] = useState({ x: 0, y: 0 });
@@ -94,6 +97,14 @@ const GameBoard = () => {
   const handleLeaveComplete = () => {
     navigate("/");
   };
+
+  useEffect(() => {
+    return () => {
+      if (rollTimeoutRef.current) {
+        clearTimeout(rollTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const playersInCenter = getPlayersInCenter(players);
@@ -459,34 +470,33 @@ const GameBoard = () => {
 
     setRolling(true);
 
+    const rollingTeamId = currentTeam;
     const roll1 = Math.floor(Math.random() * 6) + 1;
     const roll2 = Math.floor(Math.random() * 6) + 1;
 
     setPortalRoll({
-      team: currentTeam,
-      roll1,
-      roll2,
-      showDice: false,
+      id: Date.now() + Math.random(),
+      team: rollingTeamId,
+      duration: ROLL_ANIMATION_DURATION,
+      isRolling: true,
     });
 
-    setTimeout(() => {
-      setPortalRoll((prevPortalRoll) =>
-        prevPortalRoll ? { ...prevPortalRoll, showDice: true } : prevPortalRoll
-      );
-    }, 800);
+    if (rollTimeoutRef.current) {
+      clearTimeout(rollTimeoutRef.current);
+    }
 
-    const moveDelay = 1800;
+    rollTimeoutRef.current = setTimeout(() => {
+      let teamReachedCenter = false;
 
-    setTimeout(() => {
-      setPlayers((prevPlayers) =>
-        prevPlayers.map((player) => {
-          if (player.team !== currentTeam || isPlayerInCenter(player)) {
+      setPlayers((prevPlayers) => {
+        const movedPlayers = prevPlayers.map((player) => {
+          if (player.team !== rollingTeamId || isPlayerInCenter(player)) {
             return player;
           }
 
           const teammate = prevPlayers.find(
             (candidate) =>
-              candidate.team === currentTeam && candidate.id !== player.id
+              candidate.team === rollingTeamId && candidate.id !== player.id
           );
 
           if (player.isReturning && teammate && !isPlayerInCenter(teammate)) {
@@ -499,24 +509,26 @@ const GameBoard = () => {
             ...player,
             step: Math.min(player.step + roll, player.path.length - 1),
           };
-        })
-      );
+        });
 
-      const inCenter = players.some(
-        (player) => player.team === currentTeam && isPlayerInCenter(player)
-      );
+        teamReachedCenter = movedPlayers.some(
+          (player) => player.team === rollingTeamId && isPlayerInCenter(player)
+        );
 
-      if (kothActive && inCenter) {
-        handleKothRoll(currentTeam);
+        return movedPlayers;
+      });
+
+      if (kothActive && teamReachedCenter) {
+        handleKothRoll(rollingTeamId);
       }
 
-      setRolling(false);
+      rollTimeoutRef.current = null;
       nextTurn();
-    }, moveDelay);
+    }, ROLL_ANIMATION_DURATION);
+  };
 
-    setTimeout(() => {
-      setPortalRoll(null);
-    }, 3100);
+  const handleRollAnimationComplete = () => {
+    setPortalRoll(null);
   };
 
   const handleAttackTargetSelect = (teamId) => {
@@ -589,6 +601,7 @@ const GameBoard = () => {
         isDiceLocked={isDiceLocked}
         isTeamEliminated={(teamId) => isTeamEliminated(players, teamId)}
         onLeave={handleLeave}
+        onRollAnimationComplete={handleRollAnimationComplete}
         onTeamRoll={handleTeamRoll}
         players={players}
         portalRoll={portalRoll}
