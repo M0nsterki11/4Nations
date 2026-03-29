@@ -7,6 +7,11 @@ import Koth from "../Koth";
 import BoardGrid from "./BoardGrid";
 import BoardNavbar from "./BoardNavbar";
 import {
+  applyRegularTeamRoll,
+  createRegularRollPlayerData,
+  createRegularRollValues,
+} from "./rollHelpers";
+import {
   AttackModal,
   ChallengeModal,
   WinnerModal,
@@ -22,7 +27,6 @@ import {
   getPlayersInCenter,
   groupPlayersByTeam,
   initialPlayers,
-  isPlayerInCenter,
   isTeamEliminated,
 } from "./mapHelpers";
 
@@ -471,14 +475,18 @@ const GameBoard = () => {
     setRolling(true);
 
     const rollingTeamId = currentTeam;
-    const roll1 = Math.floor(Math.random() * 6) + 1;
-    const roll2 = Math.floor(Math.random() * 6) + 1;
+    const rollValuesByRole = createRegularRollValues();
+    const playerRolls = createRegularRollPlayerData(
+      players,
+      rollingTeamId,
+      rollValuesByRole
+    );
 
     setPortalRoll({
       id: Date.now() + Math.random(),
       team: rollingTeamId,
       duration: ROLL_ANIMATION_DURATION,
-      isRolling: true,
+      playerRolls,
     });
 
     if (rollTimeoutRef.current) {
@@ -489,33 +497,15 @@ const GameBoard = () => {
       let teamReachedCenter = false;
 
       setPlayers((prevPlayers) => {
-        const movedPlayers = prevPlayers.map((player) => {
-          if (player.team !== rollingTeamId || isPlayerInCenter(player)) {
-            return player;
-          }
-
-          const teammate = prevPlayers.find(
-            (candidate) =>
-              candidate.team === rollingTeamId && candidate.id !== player.id
-          );
-
-          if (player.isReturning && teammate && !isPlayerInCenter(teammate)) {
-            return player;
-          }
-
-          const roll = player.role === "first" ? roll1 : roll2;
-
-          return {
-            ...player,
-            step: Math.min(player.step + roll, player.path.length - 1),
-          };
-        });
-
-        teamReachedCenter = movedPlayers.some(
-          (player) => player.team === rollingTeamId && isPlayerInCenter(player)
+        const rollResolution = applyRegularTeamRoll(
+          prevPlayers,
+          rollingTeamId,
+          rollValuesByRole
         );
 
-        return movedPlayers;
+        teamReachedCenter = rollResolution.teamReachedCenter;
+
+        return rollResolution.movedPlayers;
       });
 
       if (kothActive && teamReachedCenter) {
@@ -527,7 +517,7 @@ const GameBoard = () => {
     }, ROLL_ANIMATION_DURATION);
   };
 
-  const handleRollAnimationComplete = () => {
+  const handlePortalRollComplete = () => {
     setPortalRoll(null);
   };
 
@@ -601,7 +591,7 @@ const GameBoard = () => {
         isDiceLocked={isDiceLocked}
         isTeamEliminated={(teamId) => isTeamEliminated(players, teamId)}
         onLeave={handleLeave}
-        onRollAnimationComplete={handleRollAnimationComplete}
+        onPortalRollComplete={handlePortalRollComplete}
         onTeamRoll={handleTeamRoll}
         players={players}
         portalRoll={portalRoll}

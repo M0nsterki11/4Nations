@@ -4,34 +4,44 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background: radial-gradient(
+    circle at center,
+    rgba(2, 6, 23, 0.1) 5%,
+    rgba(2, 6, 23, 0.2) 20%,
+    rgba(2, 6, 23, 0.42) 45%,
+    rgba(2, 6, 23, 0.68) 75%,
+    rgba(2, 6, 23, 0.88) 100%
+  );
   pointer-events: none;
   z-index: 1400;
+  animation: dice-roll-overlay-fade 180ms ease-out forwards;
 }
 
 .dice-roll-portal {
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  background: radial-gradient(
-    circle at center,
-    rgba(56, 189, 248, 0.92),
-    rgba(15, 23, 42, 0.96)
+  width: min(92vw, 420px);
+  min-height: 230px;
+  padding: 1rem 1.1rem 1.2rem;
+  border-radius: 28px;
+  background: linear-gradient(
+    180deg,
+    rgba(8, 47, 73, 0.96),
+    rgba(15, 23, 42, 0.97)
   );
   box-shadow:
-    0 0 30px rgba(59, 130, 246, 0.9),
-    0 0 70px rgba(56, 189, 248, 0.55);
+    0 0 30px rgba(59, 130, 246, 0.55),
+    0 18px 70px rgba(15, 23, 42, 0.62);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.7rem;
+  gap: 1rem;
   animation: dice-roll-portal-pulse var(--dice-roll-duration, 1100ms)
     ease-out forwards;
 }
 
 .dice-roll-animation {
-  width: 92px;
-  height: 92px;
+  width: 100px;
+  height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -73,22 +83,80 @@
   text-shadow: 0 0 10px rgba(15, 23, 42, 0.65);
 }
 
-@keyframes dice-roll-portal-pulse {
+.dice-roll-portal-dual {
+  animation: dice-roll-portal-enter 220ms ease-out forwards;
+}
+
+.dice-roll-player-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.dice-roll-player-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.dice-roll-player-title {
+  min-width: 56px;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(14, 165, 233, 0.2);
+  color: #e0f2fe;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+  box-shadow: inset 0 0 0 1px rgba(125, 211, 252, 0.22);
+}
+
+.dice-roll-player-slot {
+  width: 100%;
+  min-height: 128px;
+  padding: 0.8rem 0.7rem;
+  border-radius: 22px;
+  background: linear-gradient(
+    180deg,
+    rgba(15, 23, 42, 0.84),
+    rgba(30, 41, 59, 0.96)
+  );
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    inset 0 0 0 1px rgba(148, 163, 184, 0.16),
+    0 10px 30px rgba(2, 6, 23, 0.32);
+}
+
+.dice-roll-result-value {
+  min-width: 70px;
+  height: 70px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8fafc, #7dd3fc);
+  color: #0f172a;
+  font-size: 1.9rem;
+  font-weight: 800;
+  box-shadow: 0 10px 24px rgba(125, 211, 252, 0.3);
+  animation: dice-roll-result-reveal 180ms ease-out forwards;
+}
+
+@keyframes dice-roll-portal-enter {
   0% {
-    transform: scale(0.35);
+    transform: scale(0.9) translateY(-10px);
     opacity: 0;
-  }
-  15% {
-    transform: scale(1.02);
-    opacity: 1;
-  }
-  82% {
-    transform: scale(1);
-    opacity: 1;
   }
   100% {
-    transform: scale(0.92);
-    opacity: 0;
+    transform: scale(1);
+    opacity: 1;
   }
 }
 
@@ -113,5 +181,25 @@
   100% {
     opacity: 1;
     transform: translateY(10px) scale(0.98) rotate(0deg);
+  }
+}
+
+@keyframes dice-roll-result-reveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.82);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes dice-roll-overlay-fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
   }
 }
