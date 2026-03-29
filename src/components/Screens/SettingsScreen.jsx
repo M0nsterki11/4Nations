@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import FloatingBackdropOrbs from "./FloatingBackdropOrbs";
 import FloatingEmblems from "./FloatingEmblems";
 import "../../styles/StartScreen.css";
 import "../../styles/Settings.css";
@@ -27,11 +28,7 @@ function SettingsScreen() {
   return (
     <div className="app-root start-screen settings-screen">
       <div className="start-screen-backdrop" aria-hidden="true">
-        <span className="start-orb start-orb-air" />
-        <span className="start-orb start-orb-earth" />
-        <span className="start-orb start-orb-water" />
-        <span className="start-orb start-orb-fire" />
-
+        <FloatingBackdropOrbs />
         <FloatingEmblems />
       </div>
 
